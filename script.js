@@ -131,6 +131,33 @@ function copyLink() {
     showToast('링크가 복사되었습니다');
 }
 
+// 텍스트 파일로 내보내기
+function exportTxt() {
+    const content = editor.value;
+    const title = titleInput.value.trim();
+
+    if (!content) {
+        showToast('내보낼 내용이 없습니다');
+        return;
+    }
+
+    const safeTitle = (title || '무제').replace(/[\/\\?%*:|"<>]/g, '-');
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
+    const fileName = `${safeTitle}-${dateStr}.txt`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    showToast(`저장됨: ${fileName}`);
+}
+
 // Ctrl+S 방지 (자동저장이라 불필요)
 window.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 's') {
