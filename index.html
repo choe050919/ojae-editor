@@ -14,6 +14,14 @@
     <input type="text" id="novel-title" placeholder="제목을 입력하세요">
     
     <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
+    <div id="markdown-preview" class="markdown-preview hidden">
+        <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
+        <div id="preview-content"></div>
+    </div>
+    
+    <div class="view-toggle">
+        <button id="toggle-view-btn" onclick="toggleView()">마크다운 보기</button>
+    </div>
     
     <div class="status-bar">
         <span>글자 수 (공백 포함)</span>
@@ -35,6 +43,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="script.js"></script>
 
 </body>

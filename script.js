@@ -158,6 +158,29 @@ function exportTxt() {
     showToast(`저장됨: ${fileName}`);
 }
 
+// 마크다운 보기 토글
+const markdownPreview = document.getElementById('markdown-preview');
+const previewContent = document.getElementById('preview-content');
+const toggleViewBtn = document.getElementById('toggle-view-btn');
+let isPreviewMode = false;
+
+function toggleView() {
+    isPreviewMode = !isPreviewMode;
+    
+    if (isPreviewMode) {
+        // 마크다운 렌더링
+        previewContent.innerHTML = marked.parse(editor.value);
+        editor.classList.add('hidden');
+        markdownPreview.classList.remove('hidden');
+        toggleViewBtn.textContent = '편집 모드';
+    } else {
+        // 편집 모드로 복귀
+        editor.classList.remove('hidden');
+        markdownPreview.classList.add('hidden');
+        toggleViewBtn.textContent = '마크다운 보기';
+    }
+}
+
 // Ctrl+S 방지 (자동저장이라 불필요)
 window.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 's') {
