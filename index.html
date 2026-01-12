@@ -9,25 +9,28 @@
 <body>
 
 <div class="main-container">
-    <input type="text" id="novel-title" placeholder="제목을 입력하세요 (파일 저장 시 제목으로 사용됨)">
+    <div class="sync-status" id="sync-status">연결 중...</div>
     
-    <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 저장됩니다.&#13;&#10;백업 파일(.json)을 화면 아무 곳에나 드래그하면 불러옵니다."></textarea>
+    <input type="text" id="novel-title" placeholder="제목을 입력하세요">
+    
+    <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
     
     <div class="status-bar">
         <span>글자 수 (공백 포함)</span>
         <span><span id="char-count" class="count-value">0</span> 자</span>
     </div>
 
-    <div class="btn-group">
-        <button class="action-btn import-btn" onclick="triggerImport()">가져오기 (Import)</button>
-        <button class="action-btn export-btn" onclick="exportData()">내보내기 (Export)</button>
+    <div class="link-box">
+        <span>내 저장 링크:</span>
+        <input type="text" id="my-link" readonly onclick="this.select()">
+        <button onclick="copyLink()">복사</button>
     </div>
-
-    <input type="file" id="file-input" accept=".json" onchange="handleFileSelect(event)">
 </div>
 
 <div id="toast">알림</div>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 
 </body>

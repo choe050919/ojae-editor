@@ -1,43 +1,121 @@
+// Firebase 설정
+const firebaseConfig = {
+    apiKey: "AIzaSyBg1Jv4ptASD_ANUz2vsZfsJuqEWQqvaPE",
+    authDomain: "ojae-editor.firebaseapp.com",
+    databaseURL: "https://ojae-editor-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "ojae-editor",
+    storageBucket: "ojae-editor.firebasestorage.app",
+    messagingSenderId: "296135833858",
+    appId: "1:296135833858:web:b7b409247d5a81e977aa1b"
+};
+
+// Firebase 초기화
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// DOM 요소
 const titleInput = document.getElementById('novel-title');
 const editor = document.getElementById('novel-editor');
 const countDisplay = document.getElementById('char-count');
 const toast = document.getElementById('toast');
-const fileInput = document.getElementById('file-input');
+const syncStatus = document.getElementById('sync-status');
+const myLinkInput = document.getElementById('my-link');
 
-// 키 값 분리 (제목용, 본문용)
-const KEY_TITLE = 'novel_title';
-const KEY_CONTENT = 'novel_draft';
+// 문서 ID (URL 해시에서 가져오거나 새로 생성)
+let docId = window.location.hash.slice(1);
 
-// 1. 초기 로드
-window.onload = function() {
-    const savedTitle = localStorage.getItem(KEY_TITLE);
-    const savedContent = localStorage.getItem(KEY_CONTENT);
-
-    if (savedTitle) titleInput.value = savedTitle;
-    if (savedContent) {
-        editor.value = savedContent;
-        updateCharCount();
-    }
-};
-
-// 2. 입력 감지 (제목 & 본문) -> 자동 저장
-function handleInput() {
-    // 본문 글자수 갱신
-    updateCharCount();
-    // 저장
-    saveDataSilent();
+if (!docId) {
+    // 새 ID 생성 (랜덤 12자리)
+    docId = generateId();
+    window.location.hash = docId;
 }
 
+// 링크 표시
+myLinkInput.value = window.location.href;
+
+// ID 생성 함수
+function generateId() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// Firebase 참조
+const docRef = db.ref('novels/' + docId);
+
+// 데이터 불러오기 (실시간 동기화)
+docRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    
+    if (data) {
+        // 현재 커서 위치 저장
+        const cursorPos = editor.selectionStart;
+        const hadFocus = document.activeElement === editor;
+        
+        // 값이 다를 때만 업데이트 (타이핑 중 깜빡임 방지)
+        if (titleInput.value !== data.title && document.activeElement !== titleInput) {
+            titleInput.value = data.title || '';
+        }
+        if (editor.value !== data.content && document.activeElement !== editor) {
+            editor.value = data.content || '';
+        }
+        
+        updateCharCount();
+    }
+    
+    syncStatus.textContent = '동기화됨 ✓';
+    syncStatus.classList.add('synced');
+});
+
+// 연결 상태 모니터링
+db.ref('.info/connected').on('value', (snapshot) => {
+    if (snapshot.val() === true) {
+        syncStatus.textContent = '동기화됨 ✓';
+        syncStatus.classList.add('synced');
+    } else {
+        syncStatus.textContent = '오프라인';
+        syncStatus.classList.remove('synced');
+    }
+});
+
+// 저장 타이머 (디바운스)
+let saveTimer = null;
+
+function handleInput() {
+    updateCharCount();
+    
+    // 상태 표시
+    syncStatus.textContent = '저장 중...';
+    syncStatus.classList.remove('synced');
+    
+    // 디바운스: 0.5초 후 저장
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveToFirebase, 500);
+}
+
+function saveToFirebase() {
+    docRef.set({
+        title: titleInput.value,
+        content: editor.value,
+        updatedAt: Date.now()
+    }).then(() => {
+        syncStatus.textContent = '동기화됨 ✓';
+        syncStatus.classList.add('synced');
+    }).catch((error) => {
+        syncStatus.textContent = '저장 실패';
+        console.error('저장 오류:', error);
+    });
+}
+
+// 이벤트 리스너
 editor.addEventListener('input', handleInput);
-titleInput.addEventListener('input', handleInput); // 제목도 칠 때마다 저장
+titleInput.addEventListener('input', handleInput);
 
 function updateCharCount() {
     countDisplay.innerText = editor.value.length.toLocaleString();
-}
-
-function saveDataSilent() {
-    localStorage.setItem(KEY_TITLE, titleInput.value);
-    localStorage.setItem(KEY_CONTENT, editor.value);
 }
 
 function showToast(message) {
@@ -46,125 +124,17 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
 }
 
-// 3. 내보내기 (Export) - 파일명 생성 로직 변경
-function exportData() {
-    const content = editor.value;
-    const title = titleInput.value.trim(); // 공백 제거
-
-    if (!content && !title) {
-        alert("내보낼 내용이 없습니다.");
-        return;
-    }
-
-    // 저장할 데이터 객체
-    const data = {
-        title: title,
-        content: content,
-        savedAt: new Date().toISOString()
-    };
-
-    // 파일명 생성: 제목-날짜.json
-    // 제목이 없으면 '무제' 사용, 파일명에 못 쓰는 특수문자는 제거
-    const safeTitle = (title || "무제").replace(/[\/\\?%*:|"<>]/g, '-');
-    const date = new Date();
-    const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate()}`; // YYYYMMDD
-    const fileName = `${safeTitle}-${dateStr}.json`;
-
-    const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    
-    URL.revokeObjectURL(url);
-    showToast(`파일로 내보냈습니다: ${fileName}`);
+// 링크 복사
+function copyLink() {
+    myLinkInput.select();
+    document.execCommand('copy');
+    showToast('링크가 복사되었습니다');
 }
 
-// 4. 가져오기 (Import)
-function triggerImport() {
-    fileInput.click();
-}
-
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) processFile(file);
-    event.target.value = ''; 
-}
-
-function processFile(file) {
-    if (!file.name.toLowerCase().endsWith('.json')) {
-        alert("JSON 파일만 불러올 수 있습니다.");
-        return;
-    }
-
-    const userConfirmed = confirm("현재 작성 중인 제목과 내용이 파일 내용으로 덮어씌워집니다.\n계속하시겠습니까?");
-    if (!userConfirmed) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            
-            // 데이터 유효성 검사
-            if (typeof data.content === 'undefined') {
-                throw new Error("올바르지 않은 파일 형식입니다.");
-            }
-
-            // 제목과 본문 모두 복구
-            titleInput.value = data.title || ""; // 제목이 없으면 빈칸
-            editor.value = data.content;
-
-            saveDataSilent(); // 로컬스토리지 동기화
-            updateCharCount();
-            showToast("성공적으로 불러왔습니다!");
-            
-        } catch (error) {
-            alert("파일 불러오기 실패: " + error.message);
-        }
-    };
-    reader.readAsText(file);
-}
-
-// 5. 드래그 앤 드롭 (화면 전체)
-let dragCounter = 0;
-
-window.addEventListener('dragenter', function(e) {
-    e.preventDefault();
-    dragCounter++;
-    document.body.classList.add('drag-active');
-});
-
-window.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    dragCounter--;
-    if (dragCounter === 0) {
-        document.body.classList.remove('drag-active');
-    }
-});
-
-window.addEventListener('dragover', function(e) {
-    e.preventDefault();
-});
-
-window.addEventListener('drop', function(e) {
-    e.preventDefault();
-    document.body.classList.remove('drag-active');
-    dragCounter = 0;
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        processFile(files[0]);
-    }
-});
-
-// 단축키 (Ctrl+S) 시각적 피드백
+// Ctrl+S 방지 (자동저장이라 불필요)
 window.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        saveDataSilent();
-        showToast("저장되었습니다");
+        showToast('자동 저장됩니다');
     }
 });
