@@ -488,8 +488,16 @@ body {
     background-color: #e9ecef;
     border-radius: 4px;
     display: flex;
+    align-items: center;
     gap: 8px;
     box-sizing: border-box;
+}
+
+.link-label {
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .link-btn {
