@@ -398,6 +398,18 @@ body {
 .export-btn { background-color: #28a745; }
 .export-btn:hover { background-color: #218838; }
 
+.import-btn { background-color: #6c757d; }
+.import-btn:hover { background-color: #5a6268; }
+
+#file-input { display: none; }
+
+/* 드래그 앤 드롭 활성화 */
+.drag-active .editor-area {
+    outline: 3px dashed #007bff;
+    outline-offset: -3px;
+    background-color: #e8f4ff;
+}
+
 /* 토스트 알림 */
 #toast {
     visibility: hidden;

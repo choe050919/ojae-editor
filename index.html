@@ -45,8 +45,11 @@
     </div>
 
     <div class="btn-group">
+        <button class="action-btn import-btn" onclick="triggerImport()">텍스트 파일 불러오기</button>
         <button class="action-btn export-btn" onclick="exportTxt()">텍스트 파일로 저장</button>
     </div>
+    
+    <input type="file" id="file-input" accept=".txt" onchange="handleFileSelect(event)">
 </div>
 
 <div id="toast">알림</div>

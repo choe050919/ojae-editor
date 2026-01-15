@@ -335,3 +335,109 @@ window.addEventListener('keydown', function(e) {
         showToast('자동 저장됩니다');
     }
 });
+
+// ===== Import 기능 =====
+const fileInput = document.getElementById('file-input');
+
+function triggerImport() {
+    fileInput.click();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) processFile(file);
+    event.target.value = '';
+}
+
+function processFile(file) {
+    if (!file.name.toLowerCase().endsWith('.txt')) {
+        alert("txt 파일만 불러올 수 있습니다.");
+        return;
+    }
+
+    const userConfirmed = confirm("현재 작성 중인 모든 섹션이 파일 내용으로 대체됩니다.\n계속하시겠습니까?");
+    if (!userConfirmed) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const parsed = parseTxtToSections(text);
+        
+        sections = parsed;
+        currentSectionIndex = 0;
+        
+        renderSectionList();
+        loadSection(0);
+        saveToFirebase();
+        
+        showToast(`${sections.length}개 섹션을 불러왔습니다`);
+    };
+    reader.readAsText(file);
+}
+
+function parseTxtToSections(text) {
+    // 패턴: 줄 시작에서 "숫자." 또는 "숫자. 제목"
+    const sectionPattern = /^(\d+)\.\s*(.*)$/gm;
+    const matches = [...text.matchAll(sectionPattern)];
+    
+    if (matches.length === 0) {
+        // 형식 안 맞음 → 전체를 하나의 섹션으로
+        return [{
+            id: generateId(),
+            title: '',
+            content: text.trim()
+        }];
+    }
+    
+    const result = [];
+    
+    for (let i = 0; i < matches.length; i++) {
+        const match = matches[i];
+        const title = match[2].trim(); // 제목 (없으면 빈 문자열)
+        const startIndex = match.index + match[0].length;
+        const endIndex = (i + 1 < matches.length) ? matches[i + 1].index : text.length;
+        
+        // 본문 추출 (앞뒤 공백/줄바꿈 정리)
+        let content = text.slice(startIndex, endIndex).trim();
+        
+        result.push({
+            id: generateId(),
+            title: title,
+            content: content
+        });
+    }
+    
+    return result;
+}
+
+// ===== 드래그 앤 드롭 =====
+let dragCounter = 0;
+
+window.addEventListener('dragenter', function(e) {
+    e.preventDefault();
+    dragCounter++;
+    document.body.classList.add('drag-active');
+});
+
+window.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter === 0) {
+        document.body.classList.remove('drag-active');
+    }
+});
+
+window.addEventListener('dragover', function(e) {
+    e.preventDefault();
+});
+
+window.addEventListener('drop', function(e) {
+    e.preventDefault();
+    document.body.classList.remove('drag-active');
+    dragCounter = 0;
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        processFile(files[0]);
+    }
+});
