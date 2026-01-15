@@ -308,19 +308,17 @@ function exportTxt() {
         return;
     }
     
-    // 모든 섹션 합치기
-    let fullText = '';
+    // 새 형식: 메타데이터 + 앵커
+    let fullText = '<!--- NOVEL_FULL --->\n\n';
+    
     sections.forEach((section, index) => {
         if (index > 0) {
             fullText += '\n\n';
         }
         
-        // 섹션 헤더
-        if (section.title) {
-            fullText += `${index + 1}. ${section.title}\n`;
-        } else {
-            fullText += `${index + 1}.\n`;
-        }
+        // 섹션 앵커
+        const title = section.title || '';
+        fullText += `<!--- SEC: ${title} --->\n`;
         
         // 본문
         fullText += section.content || '';
@@ -393,13 +391,28 @@ function processFile(file) {
         return;
     }
 
-    const userConfirmed = confirm("현재 작성 중인 모든 섹션이 파일 내용으로 대체됩니다.\n계속하시겠습니까?");
-    if (!userConfirmed) return;
-
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
-        const parsed = parseTxtToSections(text);
+        
+        // 메타데이터 체크
+        if (text.startsWith('<!--- NOVEL_SECTION --->')) {
+            alert("이 파일은 섹션 파일입니다.\n'섹션 파일 불러오기' 버튼을 사용해주세요.");
+            return;
+        }
+        
+        const userConfirmed = confirm("현재 작성 중인 모든 섹션이 파일 내용으로 대체됩니다.\n계속하시겠습니까?");
+        if (!userConfirmed) return;
+        
+        let parsed;
+        
+        if (text.startsWith('<!--- NOVEL_FULL --->')) {
+            // 새 형식: 앵커 파싱
+            parsed = parseNewFormatToSections(text);
+        } else {
+            // 레거시: 기존 로직
+            parsed = parseTxtToSections(text);
+        }
         
         sections = parsed;
         currentSectionIndex = 0;
@@ -446,6 +459,63 @@ function parseTxtToSections(text) {
     }
     
     return result;
+}
+
+function parseNewFormatToSections(text) {
+    // <!--- SEC: 제목 ---> 형식 파싱
+    const lines = text.split('\n');
+    const result = [];
+    let currentTitle = null;
+    let currentContent = [];
+    let inSection = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // 메타데이터 건너뛰기
+        if (line.trim() === '<!--- NOVEL_FULL --->' || line.trim() === '') {
+            if (!inSection) continue;
+        }
+        
+        // 섹션 앵커 감지
+        const anchorMatch = line.match(/^<!---\s*SEC:\s*(.*?)\s*--->$/);
+        if (anchorMatch) {
+            // 이전 섹션 저장
+            if (inSection) {
+                result.push({
+                    id: generateId(),
+                    title: currentTitle,
+                    content: currentContent.join('\n').trim()
+                });
+            }
+            
+            // 새 섹션 시작
+            currentTitle = anchorMatch[1];
+            currentContent = [];
+            inSection = true;
+            continue;
+        }
+        
+        // 본문 수집
+        if (inSection) {
+            currentContent.push(line);
+        }
+    }
+    
+    // 마지막 섹션 저장
+    if (inSection) {
+        result.push({
+            id: generateId(),
+            title: currentTitle,
+            content: currentContent.join('\n').trim()
+        });
+    }
+    
+    return result.length > 0 ? result : [{
+        id: generateId(),
+        title: '',
+        content: text.trim()
+    }];
 }
 
 // ===== YouTube 패널 =====
@@ -651,3 +721,97 @@ document.addEventListener('click', function(e) {
         moveDropdown.classList.add('hidden');
     }
 });
+
+// ===== 섹션별 Export =====
+function exportSectionTxt() {
+    saveCurrentSection();
+    
+    const section = sections[currentSectionIndex];
+    if (!section || !section.content) {
+        showToast('내보낼 내용이 없습니다');
+        return;
+    }
+    
+    // 메타데이터 + 본문만
+    const fullText = `<!--- NOVEL_SECTION --->\n${section.content}`;
+    
+    // 파일명 생성
+    const sectionTitle = section.title || `섹션${currentSectionIndex + 1}`;
+    const safeTitle = sectionTitle.replace(/[\/\\?%*:|"<>]/g, '-');
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
+    const fileName = `${safeTitle}-${dateStr}.txt`;
+    
+    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    showToast(`저장됨: ${fileName}`);
+}
+
+// ===== 섹션별 Import =====
+const sectionFileInput = document.getElementById('section-file-input');
+
+function triggerSectionImport() {
+    sectionFileInput.click();
+}
+
+function handleSectionFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) processSectionFile(file);
+    event.target.value = '';
+}
+
+function processSectionFile(file) {
+    if (!file.name.toLowerCase().endsWith('.txt')) {
+        alert("txt 파일만 불러올 수 있습니다.");
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        let text = e.target.result;
+        
+        // 메타데이터 제거 (있으면)
+        if (text.startsWith('<!--- NOVEL_SECTION --->')) {
+            text = text.replace('<!--- NOVEL_SECTION --->\n', '');
+        }
+        
+        // 사용자 선택: 현재 섹션 대체 / 새 섹션 / 취소
+        const choice = confirm(
+            "어떻게 불러올까요?\n\n" +
+            "확인 = 현재 섹션의 내용을 대체합니다\n" +
+            "취소 = 새 섹션으로 추가합니다"
+        );
+        
+        if (choice === null) return; // 실제로는 취소 버튼이 null을 반환하지 않지만 로직상 표현
+        
+        if (choice) {
+            // 현재 섹션 대체
+            sections[currentSectionIndex].content = text.trim();
+            loadSection(currentSectionIndex);
+            saveToFirebase();
+            showToast('현재 섹션을 업데이트했습니다');
+        } else {
+            // 새 섹션 추가
+            const newSection = {
+                id: generateId(),
+                title: '',
+                content: text.trim()
+            };
+            sections.push(newSection);
+            currentSectionIndex = sections.length - 1;
+            
+            renderSectionList();
+            loadSection(currentSectionIndex);
+            saveToFirebase();
+            showToast('새 섹션을 추가했습니다');
+        }
+    };
+    reader.readAsText(file);
+}
