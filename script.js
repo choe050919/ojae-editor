@@ -395,9 +395,9 @@ function processFile(file) {
     reader.onload = function(e) {
         const text = e.target.result;
         
-        // 메타데이터 체크
+        // 섹션 파일 체크 (전체 파일 버튼으로는 불가)
         if (text.startsWith('<!--- NOVEL_SECTION --->')) {
-            alert("이 파일은 섹션 파일입니다.\n'섹션 파일 불러오기' 버튼을 사용해주세요.");
+            alert("이 파일은 섹션 파일입니다.\n'섹션 파일 불러오기' 버튼을 사용하거나 드래그 앤 드롭으로 불러와주세요.");
             return;
         }
         
@@ -602,7 +602,55 @@ window.addEventListener('drop', function(e) {
 
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-        processFile(files[0]);
+        const file = files[0];
+        
+        if (!file.name.toLowerCase().endsWith('.txt')) {
+            alert("txt 파일만 불러올 수 있습니다.");
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            
+            // 섹션 파일인지 확인
+            if (text.startsWith('<!--- NOVEL_SECTION --->')) {
+                // 섹션 파일 → 바로 섹션 import 처리
+                let content = text.replace('<!--- NOVEL_SECTION --->\n', '');
+                
+                const choice = confirm(
+                    "섹션 파일을 감지했습니다.\n\n" +
+                    "확인 = 현재 섹션의 내용을 대체합니다\n" +
+                    "취소 = 새 섹션으로 추가합니다"
+                );
+                
+                if (choice) {
+                    // 현재 섹션 대체
+                    sections[currentSectionIndex].content = content.trim();
+                    loadSection(currentSectionIndex);
+                    saveToFirebase();
+                    showToast('현재 섹션을 업데이트했습니다');
+                } else {
+                    // 새 섹션 추가
+                    const newSection = {
+                        id: generateId(),
+                        title: '',
+                        content: content.trim()
+                    };
+                    sections.push(newSection);
+                    currentSectionIndex = sections.length - 1;
+                    
+                    renderSectionList();
+                    loadSection(currentSectionIndex);
+                    saveToFirebase();
+                    showToast('새 섹션을 추가했습니다');
+                }
+            } else {
+                // 전체 파일 → 기존 로직
+                processFile(file);
+            }
+        };
+        reader.readAsText(file);
     }
 });
 
