@@ -441,3 +441,119 @@ window.addEventListener('drop', function(e) {
         processFile(files[0]);
     }
 });
+
+// ===== 선택 영역 이동 기능 =====
+const moveTextBtn = document.getElementById('move-text-btn');
+const moveDropdown = document.getElementById('move-dropdown');
+
+// 텍스트 선택 감지
+editor.addEventListener('select', updateMoveButtonState);
+editor.addEventListener('mouseup', updateMoveButtonState);
+editor.addEventListener('keyup', updateMoveButtonState);
+
+function updateMoveButtonState() {
+    const hasSelection = editor.selectionStart !== editor.selectionEnd;
+    moveTextBtn.disabled = !hasSelection;
+    
+    // 선택 해제되면 드롭다운도 닫기
+    if (!hasSelection) {
+        moveDropdown.classList.add('hidden');
+    }
+}
+
+function toggleMoveDropdown() {
+    if (moveDropdown.classList.contains('hidden')) {
+        renderMoveDropdown();
+        moveDropdown.classList.remove('hidden');
+    } else {
+        moveDropdown.classList.add('hidden');
+    }
+}
+
+function renderMoveDropdown() {
+    moveDropdown.innerHTML = '';
+    
+    // 새 섹션 옵션
+    const newOption = document.createElement('div');
+    newOption.className = 'move-option new-section';
+    newOption.textContent = '+ 새 섹션으로';
+    newOption.onclick = () => moveSelectionToNewSection();
+    moveDropdown.appendChild(newOption);
+    
+    // 기존 섹션들
+    sections.forEach((section, index) => {
+        if (index === currentSectionIndex) return; // 현재 섹션 제외
+        
+        const option = document.createElement('div');
+        option.className = 'move-option';
+        const label = section.title ? `${index + 1}. ${section.title}` : `${index + 1}.`;
+        option.textContent = label;
+        option.onclick = () => moveSelectionToSection(index);
+        moveDropdown.appendChild(option);
+    });
+}
+
+function moveSelectionToNewSection() {
+    const selectedText = getSelectedText();
+    if (!selectedText) return;
+    
+    removeSelectedText();
+    
+    const newSection = {
+        id: generateId(),
+        title: '',
+        content: selectedText
+    };
+    
+    sections.push(newSection);
+    
+    renderSectionList();
+    saveToFirebase();
+    moveDropdown.classList.add('hidden');
+    showToast('새 섹션으로 이동됨');
+}
+
+function moveSelectionToSection(targetIndex) {
+    const selectedText = getSelectedText();
+    if (!selectedText) return;
+    
+    removeSelectedText();
+    
+    // 대상 섹션 끝에 추가 (줄바꿈 후)
+    const target = sections[targetIndex];
+    if (target.content) {
+        target.content += '\n\n' + selectedText;
+    } else {
+        target.content = selectedText;
+    }
+    
+    renderSectionList();
+    saveToFirebase();
+    moveDropdown.classList.add('hidden');
+    
+    const label = target.title ? `"${target.title}"` : `섹션 ${targetIndex + 1}`;
+    showToast(`${label}(으)로 이동됨`);
+}
+
+function getSelectedText() {
+    return editor.value.substring(editor.selectionStart, editor.selectionEnd);
+}
+
+function removeSelectedText() {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    
+    editor.value = editor.value.substring(0, start) + editor.value.substring(end);
+    sections[currentSectionIndex].content = editor.value;
+    
+    // 커서 위치 조정
+    editor.selectionStart = editor.selectionEnd = start;
+    updateCharCount();
+}
+
+// 드롭다운 바깥 클릭시 닫기
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.move-text-wrapper')) {
+        moveDropdown.classList.add('hidden');
+    }
+});
