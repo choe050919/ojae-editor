@@ -525,7 +525,7 @@ body {
 .import-btn { background-color: #6c757d; }
 .import-btn:hover { background-color: #5a6268; }
 
-#file-input { display: none; }
+#file-input, #section-file-input { display: none; }
 
 /* 드래그 앤 드롭 활성화 */
 .drag-active .editor-area {
