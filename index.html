@@ -38,7 +38,10 @@
     </div>
 
     <div class="status-bar">
-        <span>현재 섹션 글자 수</span>
+        <div class="count-toggles">
+            <button id="scope-toggle" onclick="toggleScope()">현재 섹션</button>
+            <button id="space-toggle" onclick="toggleSpace()">공백 포함</button>
+        </div>
         <span><span id="char-count" class="count-value">0</span> 자</span>
     </div>
 

@@ -245,7 +245,45 @@ sectionTitleInput.addEventListener('input', () => {
 });
 
 function updateCharCount() {
-    countDisplay.innerText = editor.value.length.toLocaleString();
+    const count = calculateCharCount();
+    countDisplay.innerText = count.toLocaleString();
+}
+
+// 글자 수 계산 설정
+let countScope = 'section'; // 'section' | 'all'
+let countSpace = 'include'; // 'include' | 'exclude'
+
+const scopeToggle = document.getElementById('scope-toggle');
+const spaceToggle = document.getElementById('space-toggle');
+
+function toggleScope() {
+    countScope = (countScope === 'section') ? 'all' : 'section';
+    scopeToggle.textContent = (countScope === 'section') ? '현재 섹션' : '전체';
+    updateCharCount();
+}
+
+function toggleSpace() {
+    countSpace = (countSpace === 'include') ? 'exclude' : 'include';
+    spaceToggle.textContent = (countSpace === 'include') ? '공백 포함' : '공백 제외';
+    updateCharCount();
+}
+
+function calculateCharCount() {
+    let text = '';
+    
+    if (countScope === 'section') {
+        text = editor.value;
+    } else {
+        // 전체: 현재 섹션 저장 후 모든 섹션 합산
+        saveCurrentSection();
+        text = sections.map(s => s.content || '').join('');
+    }
+    
+    if (countSpace === 'exclude') {
+        text = text.replace(/\s/g, '');
+    }
+    
+    return text.length;
 }
 
 function showToast(message) {
