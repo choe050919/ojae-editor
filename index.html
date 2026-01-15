@@ -14,6 +14,13 @@
     <input type="text" id="novel-title" placeholder="전체 제목을 입력하세요">
     
     <div class="editor-wrapper">
+        <div class="youtube-panel">
+            <input type="text" id="youtube-input" placeholder="YouTube 영상 또는 재생목록 링크 붙여넣기">
+            <div class="youtube-player">
+                <iframe id="youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+        
         <div class="editor-area">
             <input type="text" id="section-title" placeholder="섹션 제목 (선택사항)">
             <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>

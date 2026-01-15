@@ -448,6 +448,62 @@ function parseTxtToSections(text) {
     return result;
 }
 
+// ===== YouTube 패널 =====
+const youtubeInput = document.getElementById('youtube-input');
+const youtubeIframe = document.getElementById('youtube-iframe');
+
+youtubeInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        processYoutubeLink(youtubeInput.value.trim());
+    }
+});
+
+youtubeInput.addEventListener('paste', function() {
+    setTimeout(() => {
+        processYoutubeLink(youtubeInput.value.trim());
+    }, 0);
+});
+
+function processYoutubeLink(url) {
+    if (!url) return;
+    
+    const embedUrl = convertToEmbedUrl(url);
+    
+    if (embedUrl) {
+        youtubeIframe.src = embedUrl;
+    } else {
+        showToast('유효한 YouTube 링크가 아닙니다');
+    }
+}
+
+function convertToEmbedUrl(url) {
+    // 불필요한 파라미터 제거용 URL 파싱
+    let cleanUrl = url.split('&si=')[0].split('&feature=')[0].split('&index=')[0];
+    
+    // 재생목록 페이지: youtube.com/playlist?list=PLAYLIST_ID
+    if (cleanUrl.includes('/playlist')) {
+        const playlistMatch = cleanUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        if (playlistMatch) {
+            return `https://www.youtube.com/embed/videoseries?list=${playlistMatch[1]}`;
+        }
+        return null;
+    }
+    
+    // 영상 페이지: youtube.com/watch?v=VIDEO_ID (playlist 무시)
+    const watchMatch = cleanUrl.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+        return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    }
+    
+    // 단축 URL: youtu.be/VIDEO_ID
+    const shortMatch = cleanUrl.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (shortMatch) {
+        return `https://www.youtube.com/embed/${shortMatch[1]}`;
+    }
+    
+    return null;
+}
+
 // ===== 드래그 앤 드롭 =====
 let dragCounter = 0;
 
