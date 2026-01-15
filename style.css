@@ -33,7 +33,7 @@ body {
     color: #28a745;
 }
 
-/* 제목 입력칸 스타일 */
+/* 전체 제목 입력칸 */
 #novel-title {
     width: 100%;
     max-width: 540px;
@@ -54,16 +54,52 @@ body {
     border-bottom-color: #007bff;
 }
 
+/* 에디터 래퍼 */
+.editor-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* 편집 영역 (중앙 고정 540px) */
+.editor-area {
+    width: 100%;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 섹션 제목 입력칸 */
+#section-title {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    outline: none;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+#section-title:focus {
+    border-color: #007bff;
+    background-color: #fff;
+}
+
 /* 본문 에디터 */
 #novel-editor {
     width: 100%;
-    max-width: 540px;
-    height: 65vh;
-    padding: 25px;
+    height: 60vh;
+    padding: 20px;
     font-size: 18px;
     line-height: 1.8;
-    border: 2px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
     background-color: #fff;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     resize: none;
@@ -74,10 +110,95 @@ body {
     transition: all 0.2s;
 }
 
-.drag-active #novel-editor {
+#novel-editor:focus {
     border-color: #007bff;
-    background-color: #e8f0fe;
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+/* 섹션 사이드바 (오른쪽에 붙음) */
+.section-sidebar {
+    position: absolute;
+    left: calc(50% + 285px);
+    top: 0;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-list {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.section-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background 0.15s;
+}
+
+.section-item:last-child {
+    border-bottom: none;
+}
+
+.section-item:hover {
+    background: #f5f5f5;
+}
+
+.section-item.active {
+    background: #e8f0fe;
+    border-left: 3px solid #007bff;
+}
+
+.section-label {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.section-delete-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: #999;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    flex-shrink: 0;
+}
+
+.section-delete-btn:hover {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.add-section-btn {
+    margin-top: 10px;
+    padding: 10px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-section-btn:hover {
+    background: #218838;
 }
 
 /* 마크다운 미리보기 */
@@ -87,12 +208,10 @@ body {
 
 .markdown-preview {
     width: 100%;
-    max-width: 540px;
-    min-height: 65vh;
-    max-height: 65vh;
+    height: 60vh;
     overflow-y: auto;
-    border: 2px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
     background-color: #fff;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     box-sizing: border-box;
@@ -109,7 +228,7 @@ body {
 }
 
 #preview-content {
-    padding: 25px;
+    padding: 20px;
     font-size: 18px;
     line-height: 1.8;
 }
@@ -279,11 +398,6 @@ body {
 .export-btn { background-color: #28a745; }
 .export-btn:hover { background-color: #218838; }
 
-.import-btn { background-color: #6c757d; }
-.import-btn:hover { background-color: #5a6268; }
-
-#file-input { display: none; }
-
 /* 토스트 알림 */
 #toast {
     visibility: hidden;
@@ -295,6 +409,8 @@ body {
     padding: 10px;
     position: fixed;
     bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 14px;
     z-index: 100;
 }
@@ -306,3 +422,27 @@ body {
 
 @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
 @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+/* 반응형 (모바일) */
+@media (max-width: 900px) {
+    .editor-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .editor-area {
+        width: 100%;
+        max-width: 540px;
+    }
+    
+    .section-sidebar {
+        position: static;
+        width: 100%;
+        max-width: 540px;
+        margin-top: 15px;
+    }
+    
+    .section-list {
+        max-height: 30vh;
+    }
+}

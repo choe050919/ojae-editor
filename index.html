@@ -11,20 +11,30 @@
 <div class="main-container">
     <div class="sync-status" id="sync-status">연결 중...</div>
     
-    <input type="text" id="novel-title" placeholder="제목을 입력하세요">
+    <input type="text" id="novel-title" placeholder="전체 제목을 입력하세요">
     
-    <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
-    <div id="markdown-preview" class="markdown-preview hidden">
-        <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
-        <div id="preview-content"></div>
+    <div class="editor-wrapper">
+        <div class="editor-area">
+            <input type="text" id="section-title" placeholder="섹션 제목 (선택사항)">
+            <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
+            <div id="markdown-preview" class="markdown-preview hidden">
+                <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
+                <div id="preview-content"></div>
+            </div>
+        </div>
+        
+        <div class="section-sidebar">
+            <div class="section-list" id="section-list"></div>
+            <button class="add-section-btn" onclick="addSection()">+ 새 섹션</button>
+        </div>
     </div>
     
     <div class="view-toggle">
         <button id="toggle-view-btn" onclick="toggleView()">마크다운 보기</button>
     </div>
-    
+
     <div class="status-bar">
-        <span>글자 수 (공백 포함)</span>
+        <span>현재 섹션 글자 수</span>
         <span><span id="char-count" class="count-value">0</span> 자</span>
     </div>
 
