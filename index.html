@@ -52,10 +52,14 @@
         <span><span id="char-count" class="count-value">0</span> 자</span>
     </div>
 
-    <div class="link-box">
+    <div class="link-controls">
+        <button class="link-btn" id="link-toggle-btn" onclick="toggleLinkBox()">🔗 링크 보기</button>
+        <button class="link-btn" id="link-copy-btn" onclick="copyLinkDirect()">📋 복사</button>
+    </div>
+    
+    <div class="link-box hidden" id="link-box">
         <span>내 저장 링크:</span>
         <input type="text" id="my-link" readonly onclick="this.select()">
-        <button onclick="copyLink()">복사</button>
     </div>
 
     <button class="file-toggle-btn" id="file-toggle-btn" onclick="toggleFileControls()">📁 파일 관리 ▼</button>

@@ -364,8 +364,14 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
 }
 
-// 링크 복사
-function copyLink() {
+// 링크 토글
+function toggleLinkBox() {
+    const linkBox = document.getElementById('link-box');
+    linkBox.classList.toggle('hidden');
+}
+
+// 링크 직접 복사
+function copyLinkDirect() {
     myLinkInput.select();
     document.execCommand('copy');
     showToast('링크가 복사되었습니다');

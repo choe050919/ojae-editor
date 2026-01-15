@@ -479,11 +479,41 @@ body {
     color: #ffd700;
 }
 
+/* 링크 컨트롤 */
+.link-controls {
+    width: 100%;
+    max-width: 540px;
+    margin-top: 15px;
+    padding: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    display: flex;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+.link-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.link-btn:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+}
+
 /* 링크 박스 */
 .link-box {
     width: 100%;
     max-width: 540px;
-    margin-top: 15px;
+    margin-top: 10px;
     padding: 12px 15px;
     background-color: #e9ecef;
     border-radius: 4px;
@@ -507,22 +537,6 @@ body {
     font-size: 13px;
     background: #fff;
     min-width: 0;
-}
-
-.link-box button {
-    padding: 8px 15px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    white-space: nowrap;
-    transition: background 0.2s;
-}
-
-.link-box button:hover {
-    background: #0056b3;
 }
 
 /* 버튼 그룹 */
