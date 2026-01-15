@@ -371,6 +371,20 @@ function copyLink() {
     showToast('링크가 복사되었습니다');
 }
 
+// 파일 관리 토글
+function toggleFileControls() {
+    const controls = document.getElementById('file-controls');
+    const btn = document.getElementById('file-toggle-btn');
+    
+    if (controls.classList.contains('hidden')) {
+        controls.classList.remove('hidden');
+        btn.textContent = '📁 파일 관리 ▲';
+    } else {
+        controls.classList.add('hidden');
+        btn.textContent = '📁 파일 관리 ▼';
+    }
+}
+
 // 텍스트 파일로 내보내기 (모든 섹션 합침)
 function exportTxt() {
     saveCurrentSection();
