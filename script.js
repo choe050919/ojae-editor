@@ -106,6 +106,12 @@ function renderSectionList() {
     sections.forEach((section, index) => {
         const item = document.createElement('div');
         item.className = 'section-item' + (index === currentSectionIndex ? ' active' : '');
+        item.draggable = true;
+        item.dataset.index = index;
+        
+        const dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle';
+        dragHandle.textContent = '⋮⋮';
         
         const label = document.createElement('span');
         label.className = 'section-label';
@@ -113,6 +119,7 @@ function renderSectionList() {
         label.textContent = displayTitle;
         label.onclick = () => switchSection(index);
         
+        item.appendChild(dragHandle);
         item.appendChild(label);
         
         // 삭제 버튼 (섹션이 2개 이상일 때만)
@@ -129,6 +136,71 @@ function renderSectionList() {
         
         sectionListEl.appendChild(item);
     });
+    
+    // 드래그 앤 드롭 초기화
+    initSectionDragAndDrop();
+}
+
+// ===== 섹션 드래그 앤 드롭 =====
+let draggedSectionItem = null;
+
+function initSectionDragAndDrop() {
+    const items = sectionListEl.querySelectorAll('.section-item');
+    
+    items.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedSectionItem = item;
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            draggedSectionItem = null;
+            // 새 순서 저장
+            updateSectionOrder();
+        });
+        
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!draggedSectionItem || draggedSectionItem === item) return;
+            
+            const rect = item.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            
+            if (e.clientY < midY) {
+                sectionListEl.insertBefore(draggedSectionItem, item);
+            } else {
+                sectionListEl.insertBefore(draggedSectionItem, item.nextSibling);
+            }
+        });
+    });
+}
+
+function updateSectionOrder() {
+    saveCurrentSection();
+    
+    const items = sectionListEl.querySelectorAll('.section-item');
+    const oldCurrentId = sections[currentSectionIndex].id;
+    const newSections = [];
+    
+    items.forEach((item, newIndex) => {
+        const oldIndex = parseInt(item.dataset.index);
+        newSections.push(sections[oldIndex]);
+        item.dataset.index = newIndex;
+        
+        // 현재 섹션 추적
+        if (sections[oldIndex].id === oldCurrentId) {
+            currentSectionIndex = newIndex;
+        }
+    });
+    
+    sections.length = 0;
+    newSections.forEach(s => sections.push(s));
+    
+    renderSectionList();
+    saveToFirebase();
+    showToast('섹션 순서가 변경되었습니다');
 }
 
 // 섹션 전환
@@ -862,4 +934,72 @@ function processSectionFile(file) {
         }
     };
     reader.readAsText(file);
+}
+
+// ===== 섹션 드래그 앤 드롭 =====
+let draggedSectionIndex = null;
+
+function handleSectionDragStart(e) {
+    draggedSectionIndex = parseInt(e.currentTarget.dataset.index);
+    e.currentTarget.style.opacity = '0.4';
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleSectionDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    
+    const targetItem = e.currentTarget;
+    const targetIndex = parseInt(targetItem.dataset.index);
+    
+    // 드래그 중인 아이템과 다른 아이템 위에 있을 때만 표시
+    if (draggedSectionIndex !== targetIndex) {
+        targetItem.style.borderTop = '2px solid #007bff';
+    }
+    
+    return false;
+}
+
+function handleSectionDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    const targetIndex = parseInt(e.currentTarget.dataset.index);
+    
+    if (draggedSectionIndex !== null && draggedSectionIndex !== targetIndex) {
+        saveCurrentSection();
+        
+        // 배열에서 아이템 이동
+        const [removed] = sections.splice(draggedSectionIndex, 1);
+        sections.splice(targetIndex, 0, removed);
+        
+        // 현재 인덱스 업데이트
+        if (currentSectionIndex === draggedSectionIndex) {
+            currentSectionIndex = targetIndex;
+        } else if (draggedSectionIndex < currentSectionIndex && targetIndex >= currentSectionIndex) {
+            currentSectionIndex--;
+        } else if (draggedSectionIndex > currentSectionIndex && targetIndex <= currentSectionIndex) {
+            currentSectionIndex++;
+        }
+        
+        renderSectionList();
+        saveToFirebase();
+        showToast('섹션 순서가 변경되었습니다');
+    }
+    
+    return false;
+}
+
+function handleSectionDragEnd(e) {
+    e.currentTarget.style.opacity = '1';
+    
+    // 모든 아이템의 border 초기화
+    document.querySelectorAll('.section-item').forEach(item => {
+        item.style.borderTop = '';
+    });
+    
+    draggedSectionIndex = null;
 }
