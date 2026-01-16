@@ -158,7 +158,8 @@ body {
 
 /* 타입 토글 버튼 */
 .type-toggle {
-    padding: 0 14px;
+    width: 75px;
+    padding: 0;
     border: 1px solid #ccc;
     border-bottom: none;
     border-left: none;
@@ -223,7 +224,7 @@ body {
     position: absolute;
     left: calc(50% + 285px);
     top: 0;
-    width: 320px;
+    width: 160px;
     display: flex;
     flex-direction: column;
 }
