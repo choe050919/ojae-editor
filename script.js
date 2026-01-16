@@ -613,6 +613,40 @@ function parseNewFormatToSections(text) {
 // ===== YouTube 패널 =====
 const youtubeInput = document.getElementById('youtube-input');
 const youtubeIframe = document.getElementById('youtube-iframe');
+const youtubePanel = document.getElementById('youtube-panel');
+const resizeHandle = document.getElementById('youtube-resize-handle');
+
+// 리사이즈 기능
+let isResizing = false;
+let startX, startWidth;
+
+resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    startWidth = youtubePanel.offsetWidth;
+    
+    // 리사이즈 중 iframe 이벤트 차단
+    youtubePanel.style.pointerEvents = 'none';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    
+    // 우상단 고정, 좌하단으로 늘어남
+    const deltaX = startX - e.clientX; // 왼쪽으로 이동 = 너비 증가
+    const newWidth = Math.max(200, Math.min(800, startWidth + deltaX)); // 200~800px 제한
+    
+    youtubePanel.style.width = newWidth + 'px';
+});
+
+document.addEventListener('mouseup', () => {
+    if (isResizing) {
+        isResizing = false;
+        // iframe 이벤트 복구
+        youtubePanel.style.pointerEvents = 'auto';
+    }
+});
 
 youtubeInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {

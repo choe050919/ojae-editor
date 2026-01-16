@@ -71,10 +71,31 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.resize-handle {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 15px;
+    height: 15px;
+    cursor: nwse-resize;
+    background: linear-gradient(45deg, #999 50%, transparent 50%);
+}
+
+.resize-handle:hover {
+    background: linear-gradient(45deg, #007bff 50%, transparent 50%);
 }
 
 #youtube-input {
     width: 100%;
+    height: 36px;
+    flex-shrink: 0;
     padding: 10px 12px;
     font-size: 13px;
     border: 1px solid #ccc;
@@ -93,6 +114,7 @@ body {
     background: #000;
     border-radius: 4px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 #youtube-iframe {
