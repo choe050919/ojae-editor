@@ -223,7 +223,7 @@ body {
     position: absolute;
     left: calc(50% + 285px);
     top: 0;
-    width: 160px;
+    width: 200px;
     display: flex;
     flex-direction: column;
 }
