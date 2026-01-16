@@ -241,6 +241,11 @@ function loadSection(index) {
         editor.value = section.content || '';
         updateCharCount();
         updateTypeUI(section.type || 'body');
+        
+        // 프리뷰 모드면 프리뷰도 업데이트
+        if (isPreviewMode) {
+            previewContent.innerHTML = marked.parse(editor.value);
+        }
     }
 }
 
