@@ -67,17 +67,53 @@
         <input type="text" id="my-link" readonly onclick="this.select()">
     </div>
 
-    <button class="file-toggle-btn" id="file-toggle-btn" onclick="toggleFileControls()">📁 파일 관리 ▼</button>
+    <div class="file-buttons">
+        <button class="file-btn import-btn" onclick="openImportModal()">불러오기</button>
+        <button class="file-btn export-btn" onclick="openExportModal()">내보내기</button>
+    </div>
     
-    <div id="file-controls" class="hidden">
-        <div class="btn-group">
-            <button class="action-btn import-btn" onclick="triggerImport()">전체 파일 불러오기</button>
-            <button class="action-btn export-btn" onclick="exportTxt()">전체 파일로 저장</button>
+    <!-- Import 모달 -->
+    <div id="import-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeImportModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>불러오기</h3>
+                <button class="modal-close" onclick="closeImportModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <button class="modal-action-btn" onclick="triggerImport(); closeImportModal();">전체 파일 불러오기</button>
+                <button class="modal-action-btn" onclick="triggerSectionImport(); closeImportModal();">섹션 파일 불러오기</button>
+            </div>
         </div>
-        
-        <div class="btn-group">
-            <button class="action-btn import-btn" onclick="triggerSectionImport()">섹션 파일 불러오기</button>
-            <button class="action-btn export-btn" onclick="exportSectionTxt()">현재 섹션 저장</button>
+    </div>
+    
+    <!-- Export 모달 -->
+    <div id="export-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="closeExportModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>내보내기</h3>
+                <button class="modal-close" onclick="closeExportModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label>포맷</label>
+                    <select id="export-format" onchange="updateFormatDescription()">
+                        <option value="editable">백업용 (.txt)</option>
+                        <option value="readable">완성본 (.txt)</option>
+                    </select>
+                </div>
+                <div class="modal-field-desc" id="format-desc">불러오기 가능</div>
+                <div class="modal-field">
+                    <label>범위</label>
+                    <select id="export-scope" onchange="updateScopeDescription()">
+                        <option value="all">전체</option>
+                        <option value="current">현재 섹션</option>
+                    </select>
+                </div>
+                <div class="modal-field-desc" id="scope-desc"></div>
+                <button class="modal-submit-btn" onclick="executeExport()">내보내기</button>
+            </div>
         </div>
     </div>
     

@@ -405,17 +405,136 @@ function copyLinkDirect() {
 }
 
 // 파일 관리 토글
-function toggleFileControls() {
-    const controls = document.getElementById('file-controls');
-    const btn = document.getElementById('file-toggle-btn');
+// Import 모달
+function openImportModal() {
+    document.getElementById('import-modal').classList.remove('hidden');
+}
+
+function closeImportModal() {
+    document.getElementById('import-modal').classList.add('hidden');
+}
+
+// Export 모달
+function openExportModal() {
+    // 포맷 설명 초기화
+    updateFormatDescription();
+    // 범위 설명 초기화
+    updateScopeDescription();
     
-    if (controls.classList.contains('hidden')) {
-        controls.classList.remove('hidden');
-        btn.textContent = '📁 파일 관리 ▲';
-    } else {
-        controls.classList.add('hidden');
-        btn.textContent = '📁 파일 관리 ▼';
+    document.getElementById('export-modal').classList.remove('hidden');
+}
+
+function closeExportModal() {
+    document.getElementById('export-modal').classList.add('hidden');
+}
+
+// 포맷 설명 업데이트
+function updateFormatDescription() {
+    const format = document.getElementById('export-format').value;
+    const descEl = document.getElementById('format-desc');
+    
+    if (format === 'editable') {
+        descEl.textContent = '불러오기 가능';
+    } else if (format === 'readable') {
+        descEl.textContent = '불러오기 불가, 노트 제외';
     }
+}
+
+// 범위 설명 업데이트
+function updateScopeDescription() {
+    const scope = document.getElementById('export-scope').value;
+    const descEl = document.getElementById('scope-desc');
+    
+    if (scope === 'all') {
+        descEl.textContent = '';
+    } else if (scope === 'current') {
+        const section = sections[currentSectionIndex];
+        const typeIcon = section.type === 'note' ? '📝 ' : '';
+        const title = section.title || '(무제)';
+        descEl.textContent = `${currentSectionIndex + 1}. ${typeIcon}${title}`;
+    }
+}
+
+// Export 실행
+function executeExport() {
+    const format = document.getElementById('export-format').value;
+    const scope = document.getElementById('export-scope').value;
+    
+    saveCurrentSection();
+    
+    let content = '';
+    let fileName = '';
+    
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
+    
+    if (scope === 'all') {
+        // 전체 내보내기
+        if (format === 'editable') {
+            // 편집용: 메타데이터 포함
+            const meta = {
+                version: 2,
+                title: novelTitle,
+                sections: sections.map(s => ({
+                    id: s.id,
+                    title: s.title,
+                    type: s.type || 'body'
+                }))
+            };
+            content = `<!--- NOVEL_META: ${JSON.stringify(meta)} --->\n\n`;
+            sections.forEach((section, index) => {
+                const typeTag = section.type === 'note' ? ' [NOTE]' : '';
+                if (section.title) {
+                    content += `<!--- SECTION: ${section.title}${typeTag} --->\n`;
+                } else {
+                    content += `<!--- SECTION: 섹션${index + 1}${typeTag} --->\n`;
+                }
+                content += section.content + '\n\n';
+            });
+        } else {
+            // 읽기용: 메타데이터 없음, 본문만
+            sections.forEach((section) => {
+                if (section.type !== 'note') {
+                    if (section.title) {
+                        content += `# ${section.title}\n\n`;
+                    }
+                    content += section.content + '\n\n';
+                }
+            });
+        }
+        
+        const safeTitle = (novelTitle || '소설').replace(/[\/\\?%*:|"<>]/g, '-');
+        fileName = `${safeTitle}-${dateStr}.txt`;
+    } else {
+        // 현재 섹션 내보내기
+        const section = sections[currentSectionIndex];
+        
+        if (format === 'editable') {
+            content = `<!--- NOVEL_SECTION --->\n${section.content}`;
+        } else {
+            if (section.title) {
+                content = `# ${section.title}\n\n`;
+            }
+            content += section.content;
+        }
+        
+        const sectionTitle = section.title || `섹션${currentSectionIndex + 1}`;
+        const safeTitle = sectionTitle.replace(/[\/\\?%*:|"<>]/g, '-');
+        fileName = `${safeTitle}-${dateStr}.txt`;
+    }
+    
+    // 파일 다운로드
+    const blob = new Blob([content.trim()], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    closeExportModal();
+    showToast(`저장됨: ${fileName}`);
 }
 
 // 텍스트 파일로 내보내기 (모든 섹션 합침)
