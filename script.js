@@ -52,6 +52,15 @@ function generateId() {
 // Firebase 참조
 const docRef = db.ref('novels/' + docId);
 
+// 방문 기록 업데이트
+function updateLastVisited() {
+    docRef.update({
+        lastVisited: Date.now()
+    }).catch((error) => {
+        console.error('방문 기록 오류:', error);
+    });
+}
+
 // 데이터 불러오기
 docRef.on('value', (snapshot) => {
     const data = snapshot.val();
@@ -61,6 +70,8 @@ docRef.on('value', (snapshot) => {
         // 새 형식 (섹션 있음)
         sections = data.sections;
         novelTitle = data.title || '';
+        // 방문 기록 업데이트
+        updateLastVisited();
     } else if (data && data.content !== undefined) {
         // 기존 형식 -> 마이그레이션
         novelTitle = data.title || '';
@@ -81,6 +92,8 @@ docRef.on('value', (snapshot) => {
             content: '',
             type: 'body'
         }];
+        // 새 문서도 방문 기록
+        updateLastVisited();
     }
     
     novelTitleInput.value = novelTitle;
