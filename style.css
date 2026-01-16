@@ -130,16 +130,21 @@ body {
     flex-direction: column;
 }
 
-/* 섹션 제목 입력칸 */
+/* 섹션 헤더 (제목 + 타입 토글) */
+.section-header {
+    display: flex;
+    align-items: stretch;
+}
+
 #section-title {
-    width: 100%;
+    flex: 1;
     padding: 12px 15px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
     border: 1px solid #ccc;
     border-bottom: none;
-    border-radius: 4px 4px 0 0;
+    border-radius: 4px 0 0 0;
     outline: none;
     background-color: #fafafa;
     box-sizing: border-box;
@@ -149,6 +154,28 @@ body {
 #section-title:focus {
     border-color: #007bff;
     background-color: #fff;
+}
+
+/* 타입 토글 버튼 */
+.type-toggle {
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-left: none;
+    border-radius: 0 4px 0 0;
+    background-color: #fafafa;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.type-toggle:hover {
+    background-color: #e9ecef;
+}
+
+.type-toggle.note {
+    background-color: #fff8e1;
+    color: #f57c00;
 }
 
 /* 본문 에디터 */
@@ -172,6 +199,23 @@ body {
 
 #novel-editor:focus {
     border-color: #007bff;
+}
+
+/* 노트 타입일 때 편집 영역 스타일 */
+.editor-area.note-mode #novel-editor {
+    border-color: #ffb300;
+    background-color: #fffef5;
+}
+
+.editor-area.note-mode #section-title {
+    background-color: #fff8e1;
+    border-color: #ffb300;
+}
+
+.editor-area.note-mode .type-toggle {
+    background-color: #fff8e1;
+    border-color: #ffb300;
+    color: #f57c00;
 }
 
 /* 섹션 사이드바 (오른쪽에 붙음) */
@@ -219,6 +263,20 @@ body {
 .section-item.active {
     background: #e8f0fe;
     border-left-color: #007bff;
+}
+
+/* 노트 타입 섹션 스타일 */
+.section-item.note-type {
+    background: #fffef5;
+}
+
+.section-item.note-type.active {
+    background: #fff8e1;
+    border-left-color: #ffb300;
+}
+
+.section-item.note-type:hover {
+    background: #fff8e1;
 }
 
 .section-label {

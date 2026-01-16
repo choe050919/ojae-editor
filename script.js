@@ -22,6 +22,8 @@ const toast = document.getElementById('toast');
 const syncStatus = document.getElementById('sync-status');
 const myLinkInput = document.getElementById('my-link');
 const sectionListEl = document.getElementById('section-list');
+const typeToggleBtn = document.getElementById('type-toggle-btn');
+const editorArea = document.querySelector('.editor-area');
 
 // 문서 ID
 let docId = window.location.hash.slice(1);
@@ -65,7 +67,8 @@ docRef.on('value', (snapshot) => {
         sections = [{
             id: generateId(),
             title: '',
-            content: data.content
+            content: data.content,
+            type: 'body'
         }];
         // 서버에 새 형식으로 저장
         saveToFirebase();
@@ -75,7 +78,8 @@ docRef.on('value', (snapshot) => {
         sections = [{
             id: generateId(),
             title: '',
-            content: ''
+            content: '',
+            type: 'body'
         }];
     }
     
@@ -105,7 +109,8 @@ function renderSectionList() {
     
     sections.forEach((section, index) => {
         const item = document.createElement('div');
-        item.className = 'section-item' + (index === currentSectionIndex ? ' active' : '');
+        const isNote = section.type === 'note';
+        item.className = 'section-item' + (index === currentSectionIndex ? ' active' : '') + (isNote ? ' note-type' : '');
         item.draggable = true;
         item.dataset.index = index;
         
@@ -115,7 +120,8 @@ function renderSectionList() {
         
         const label = document.createElement('span');
         label.className = 'section-label';
-        const displayTitle = section.title ? `${index + 1}. ${section.title}` : `${index + 1}.`;
+        const typeIcon = isNote ? '📝 ' : '';
+        const displayTitle = section.title ? `${index + 1}. ${typeIcon}${section.title}` : `${index + 1}. ${typeIcon}(무제)`;
         label.textContent = displayTitle;
         label.onclick = () => switchSection(index);
         
@@ -221,6 +227,26 @@ function loadSection(index) {
         sectionTitleInput.value = section.title || '';
         editor.value = section.content || '';
         updateCharCount();
+        updateTypeUI(section.type || 'body');
+    }
+}
+
+// 타입 UI 업데이트
+function updateTypeUI(type) {
+    const isNote = type === 'note';
+    typeToggleBtn.textContent = isNote ? '📝 노트' : '📄 본문';
+    typeToggleBtn.classList.toggle('note', isNote);
+    editorArea.classList.toggle('note-mode', isNote);
+}
+
+// 섹션 타입 토글
+function toggleSectionType() {
+    const section = sections[currentSectionIndex];
+    if (section) {
+        section.type = section.type === 'note' ? 'body' : 'note';
+        updateTypeUI(section.type);
+        renderSectionList();
+        saveToFirebase();
     }
 }
 
@@ -239,7 +265,8 @@ function addSection() {
     const newSection = {
         id: generateId(),
         title: '',
-        content: ''
+        content: '',
+        type: 'body'
     };
     
     sections.push(newSection);
@@ -840,7 +867,8 @@ function moveSelectionToNewSection() {
     const newSection = {
         id: generateId(),
         title: '',
-        content: selectedText
+        content: selectedText,
+        type: 'body'
     };
     
     sections.push(newSection);
@@ -976,7 +1004,8 @@ function processSectionFile(file) {
             const newSection = {
                 id: generateId(),
                 title: '',
-                content: text.trim()
+                content: text.trim(),
+                type: 'body'
             };
             sections.push(newSection);
             currentSectionIndex = sections.length - 1;

@@ -23,7 +23,10 @@
         </div>
         
         <div class="editor-area">
-            <input type="text" id="section-title" placeholder="섹션 제목 (선택사항)">
+            <div class="section-header">
+                <input type="text" id="section-title" placeholder="섹션 제목 (선택사항)">
+                <button id="type-toggle-btn" class="type-toggle" onclick="toggleSectionType()" title="본문/노트 전환">📄 본문</button>
+            </div>
             <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
             <div id="markdown-preview" class="markdown-preview hidden">
                 <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
