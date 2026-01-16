@@ -13,6 +13,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// 테마 설정
+const btnTheme = document.getElementById('btn-theme');
+
+function applyTheme(isDark, { persist = true } = {}) {
+    document.documentElement.classList.toggle('dark', isDark);
+    btnTheme.textContent = isDark ? '☀️' : '🌙';
+    if (persist) {
+        localStorage.setItem('novelTheme', isDark ? 'dark' : 'light');
+    }
+}
+
+// 저장된 테마 또는 시스템 설정 적용
+const savedTheme = localStorage.getItem('novelTheme');
+if (savedTheme) {
+    applyTheme(savedTheme === 'dark', { persist: false });
+} else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(prefersDark, { persist: false });
+}
+
+btnTheme.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(!isDark);
+});
+
 // DOM 요소
 const novelTitleInput = document.getElementById('novel-title');
 const sectionTitleInput = document.getElementById('section-title');
