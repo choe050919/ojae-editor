@@ -762,6 +762,22 @@ const youtubeIframe = document.getElementById('youtube-iframe');
 const youtubePanel = document.getElementById('youtube-panel');
 const resizeHandle = document.getElementById('youtube-resize-handle');
 
+// localStorage에서 YouTube 상태 복원
+const savedYoutubeWidth = localStorage.getItem('youtubeWidth');
+const savedYoutubeUrl = localStorage.getItem('youtubeUrl');
+
+if (savedYoutubeWidth) {
+    youtubePanel.style.width = savedYoutubeWidth + 'px';
+}
+
+if (savedYoutubeUrl) {
+    youtubeInput.value = savedYoutubeUrl;
+    const embedUrl = convertToEmbedUrl(savedYoutubeUrl);
+    if (embedUrl) {
+        youtubeIframe.src = embedUrl;
+    }
+}
+
 // 리사이즈 기능
 let isResizing = false;
 let startX, startWidth;
@@ -791,6 +807,8 @@ document.addEventListener('mouseup', () => {
         isResizing = false;
         // iframe 이벤트 복구
         youtubePanel.style.pointerEvents = 'auto';
+        // 크기 저장
+        localStorage.setItem('youtubeWidth', youtubePanel.offsetWidth);
     }
 });
 
@@ -813,6 +831,8 @@ function processYoutubeLink(url) {
     
     if (embedUrl) {
         youtubeIframe.src = embedUrl;
+        // URL 저장
+        localStorage.setItem('youtubeUrl', url);
     } else {
         showToast('유효한 YouTube 링크가 아닙니다');
     }
