@@ -600,6 +600,7 @@ body {
 }
 
 .markdown-preview {
+    flex: 1;
     width: 100%;
     height: calc(100vh - 250px);
     overflow-y: auto;
