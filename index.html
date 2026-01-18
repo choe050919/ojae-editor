@@ -32,6 +32,9 @@
             <span>내보내기</span>
         </button>
         <div class="header-divider"></div>
+        <button id="btn-view-mode" class="icon-btn" onclick="toggleView()" title="읽기/쓰기 전환">
+            <i class="ph ph-pencil-simple"></i>
+        </button>
         <button id="btn-theme" class="icon-btn" title="테마 전환"><i class="ph ph-sun"></i></button>
     </div>
 </header>
@@ -64,10 +67,6 @@
             <div class="section-header">
                 <input type="text" id="section-title" placeholder="섹션 제목 (선택사항)">
                 <div class="section-controls">
-                    <button id="view-toggle-btn" class="control-btn" onclick="toggleView()" title="읽기/쓰기 모드 전환">
-                        <i class="ph ph-pencil-simple"></i>
-                        <span>쓰기</span>
-                    </button>
                     <button id="type-toggle-btn" class="control-btn" onclick="toggleSectionType()" title="본문/노트 전환">
                         <i class="ph ph-file-text"></i>
                         <span>본문</span>
@@ -76,7 +75,10 @@
             </div>
             <textarea id="novel-editor" placeholder="이곳에 글을 쓰면 자동으로 클라우드에 저장됩니다."></textarea>
             <div id="markdown-preview" class="markdown-preview hidden">
-                <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
+                <div class="preview-notice">
+                    <i class="ph ph-book-open"></i>
+                    <span>읽기 모드</span>
+                </div>
                 <div id="preview-content"></div>
             </div>
             

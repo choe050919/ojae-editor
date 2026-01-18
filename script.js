@@ -675,33 +675,30 @@ let isPreviewMode = false;
 function toggleView() {
     isPreviewMode = !isPreviewMode;
     
-    // HTML의 실제 ID인 'view-toggle-btn'을 가져옵니다.
-    const btn = document.getElementById('view-toggle-btn');
+    // 바뀐 ID(btn-view-mode)로 버튼을 찾습니다.
+    const btn = document.getElementById('btn-view-mode');
     const btnIcon = btn.querySelector('i');
-    const btnText = btn.querySelector('span');
     
     if (isPreviewMode) {
-        // 1. 뷰어 모드로 전환
+        // 1. 읽기 모드 진입
         previewContent.innerHTML = marked.parse(editor.value);
         editor.classList.add('hidden');
         markdownPreview.classList.remove('hidden');
         
-        // 2. 버튼 UI 변경 (쓰기 -> 읽기)
-        btn.classList.add('reading-mode'); // CSS 스타일 적용
-        btnIcon.className = 'ph ph-book-open';
-        btnText.textContent = '읽기';
+        // 2. 버튼 UI 변경 (책 아이콘 & 강조 색상)
+        btnIcon.className = 'ph ph-book-open'; 
+        btn.classList.add('reading-mode'); // CSS에서 추가한 클래스 적용
         btn.title = "편집 모드로 돌아가기";
         
     } else {
-        // 1. 에디터 모드로 전환
+        // 1. 쓰기 모드 복귀
         editor.classList.remove('hidden');
         markdownPreview.classList.add('hidden');
         
-        // 2. 버튼 UI 변경 (읽기 -> 쓰기)
-        btn.classList.remove('reading-mode');
+        // 2. 버튼 UI 원복 (연필 아이콘 & 강조 해제)
         btnIcon.className = 'ph ph-pencil-simple';
-        btnText.textContent = '쓰기';
-        btn.title = "읽기/쓰기 모드 전환";
+        btn.classList.remove('reading-mode');
+        btn.title = "읽기 모드로 전환";
     }
 }
 

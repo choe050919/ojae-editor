@@ -11,9 +11,11 @@
     --text-muted: #78716c;
     --accent-color: #007bff;
     --success-color: #16a34a;
-    --note-bg: #fffbeb;
-    --note-border: #f59e0b;
-    --note-text: #92400e;
+    --note-bg: #f7f5f0;
+    --note-border: #dcd7cd;
+    --note-text: #5c5855;
+    --read-accent: #4a5d4e;
+    --read-bg: #dfe7e2;
 }
 
 :root.dark {
@@ -28,9 +30,11 @@
     --text-muted: #a8a29e;
     --accent-color: #60a5fa;
     --success-color: #4ade80;
-    --note-bg: #451a03;
-    --note-border: #d97706;
-    --note-text: #fcd34d;
+    --note-bg: #2b2624; 
+    --note-border: #57534e;
+    --note-text: #d6d3d1;
+    --read-accent: #8ba895;
+    --read-bg: #2c332e;
 }
 
 /* ===== 헤더 (바 형태) ===== */
@@ -101,6 +105,12 @@
     width: 1px;
     height: 24px;
     background: var(--border-color);
+}
+
+/* [읽기 모드 스타일] 헤더 아이콘 버튼 */
+.icon-btn.reading-mode {
+    color: var(--read-bg);
+    background-color: var(--read-accent);
 }
 
 .icon-btn {
@@ -579,11 +589,17 @@ body {
 }
 
 .preview-notice {
-    background: var(--note-bg);
-    color: var(--note-text);
-    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: var(--read-bg); 
+    color: var(--read-accent);
+    
+    padding: 8px 20px;
     font-size: 14px;
     border-bottom: 1px solid var(--note-border);
+    
     position: sticky;
     top: 0;
 }
