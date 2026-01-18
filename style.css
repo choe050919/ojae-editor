@@ -1,55 +1,138 @@
-/* 기본 레이아웃 설정 */
+/* ===== CSS 변수 (Stone 색상) ===== */
 :root {
-    --bg-primary: #f0f2f5;
-    --bg-secondary: #fff;
-    --bg-tertiary: #f8f9fa;
-    --bg-hover: #e9ecef;
-    --bg-active: #e8f0fe;
-    --border-color: #d1d5db;
-    --border-light: #e5e7eb;
-    --text-primary: #1f2937;
-    --text-secondary: #374151;
-    --text-muted: #6b7280;
-    --accent-color: #3b82f6;
-    --accent-hover: #2563eb;
-    --success-color: #28a745;
-    --note-bg: #fff8e1;
-    --note-border: #ffb300;
-    --note-text: #f57c00;
-    --shadow: rgba(0,0,0,0.1);
-    --modal-overlay: rgba(0,0,0,0.5);
+    --bg-primary: #f5f5f4;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #fafaf9;
+    --bg-hover: #e7e5e4;
+    --border-color: #d6d3d1;
+    --border-light: #e7e5e4;
+    --text-primary: #1c1917;
+    --text-secondary: #44403c;
+    --text-muted: #78716c;
+    --accent-color: #007bff;
+    --success-color: #16a34a;
+    --note-bg: #fffbeb;
+    --note-border: #f59e0b;
+    --note-text: #92400e;
 }
 
 :root.dark {
-    --bg-primary: #1e1e1e;
-    --bg-secondary: #252526;
-    --bg-tertiary: #2d2d2d;
-    --bg-hover: #3c3c3c;
-    --bg-active: #37373d;
-    --border-color: #404040;
-    --border-light: #333333;
-    --text-primary: #e5e7eb;
-    --text-secondary: #d1d5db;
-    --text-muted: #9ca3af;
-    --accent-color: #93c5fd;
-    --accent-hover: #60a5fa;
+    --bg-primary: #1c1917;
+    --bg-secondary: #1c1917;
+    --bg-tertiary: #292524;
+    --bg-hover: #44403c;
+    --border-color: #44403c;
+    --border-light: #373330;
+    --text-primary: #e7e5e4;
+    --text-secondary: #d6d3d1;
+    --text-muted: #a8a29e;
+    --accent-color: #60a5fa;
     --success-color: #4ade80;
-    --note-bg: #3d3520;
-    --note-border: #b38600;
-    --note-text: #ffd43b;
-    --shadow: rgba(0,0,0,0.3);
-    --modal-overlay: rgba(0,0,0,0.7);
+    --note-bg: #451a03;
+    --note-border: #d97706;
+    --note-text: #fcd34d;
 }
 
+/* ===== 헤더 (바 형태) ===== */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.logo i {
+    font-size: 1.3rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.header-btn i {
+    font-size: 1.1rem;
+}
+
+.header-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.header-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border-color);
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ===== 기본 레이아웃 설정 ===== */
 body {
     background-color: var(--bg-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding: 40px 20px;
+    padding: 70px 20px 40px 20px;
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     min-height: 100vh;
+    color: var(--text-primary);
 }
 
 .main-container {
@@ -59,33 +142,8 @@ body {
     width: 100%;
 }
 
-/* 상단 바 */
-.top-bar {
-    width: 100%;
-    max-width: 540px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.theme-toggle {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
-
-.theme-toggle:hover {
-    background: var(--bg-hover);
-}
-
 /* 동기화 상태 표시 */
 .sync-status {
-    text-align: right;
     font-size: 13px;
     color: var(--text-muted);
 }
@@ -127,34 +185,34 @@ body {
     justify-content: center;
 }
 
-/* YouTube 패널 (왼쪽) */
+/* YouTube 패널 (왼쪽 끝) */
 .youtube-panel {
-    position: absolute;
-    right: calc(50% + 285px);
-    top: 0;
+    position: fixed;
+    left: 20px;
+    top: 70px;
     width: 320px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     padding: 10px;
     box-sizing: border-box;
 }
 
 .resize-handle {
     position: absolute;
-    left: 0;
+    right: 0;
     bottom: 0;
     width: 15px;
     height: 15px;
-    cursor: nwse-resize;
-    background: linear-gradient(45deg, #999 50%, transparent 50%);
+    cursor: nesw-resize;
+    background: linear-gradient(-45deg, var(--text-muted) 50%, transparent 50%);
 }
 
 .resize-handle:hover {
-    background: linear-gradient(45deg, #007bff 50%, transparent 50%);
+    background: linear-gradient(-45deg, var(--accent-color) 50%, transparent 50%);
 }
 
 #youtube-input {
@@ -266,7 +324,7 @@ body {
     border-radius: 0 0 4px 4px;
     background-color: var(--bg-secondary);
     color: var(--text-primary);
-    box-shadow: 0 2px 10px var(--shadow);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     resize: none;
     outline: none;
     overflow-y: auto;
@@ -297,20 +355,21 @@ body {
 .editor-area.note-mode .type-toggle {
     background-color: var(--note-bg);
     border-color: var(--note-border);
+    color: var(--note-text);
 }
 
-/* 섹션 사이드바 (오른쪽에 붙음) */
+/* 섹션 사이드바 (오른쪽 끝) */
 .section-sidebar {
-    position: absolute;
-    left: calc(50% + 285px);
-    top: 0;
-    width: 320px;
+    position: fixed;
+    right: 20px;
+    top: 70px;
+    width: 160px;
     display: flex;
     flex-direction: column;
 }
 
 .section-list {
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     overflow-y: auto;
@@ -330,7 +389,7 @@ body {
 
 .section-item.dragging {
     opacity: 0.5;
-    background: var(--bg-active);
+    background: var(--bg-hover);
 }
 
 .section-item:last-child {
@@ -342,7 +401,7 @@ body {
 }
 
 .section-item.active {
-    background: var(--bg-active);
+    background: var(--bg-hover);
     border-left-color: var(--accent-color);
 }
 
@@ -439,7 +498,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 0 0 4px 4px;
     background-color: var(--bg-secondary);
-    box-shadow: 0 2px 10px var(--shadow);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     box-sizing: border-box;
 }
 
@@ -525,15 +584,15 @@ body {
     padding: 10px 25px;
     font-size: 14px;
     cursor: pointer;
-    border: 1px solid var(--border-color);
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
+    border: 1px solid #6c757d;
+    background: #6c757d;
+    color: #fff;
     border-radius: 4px;
     transition: background 0.2s;
 }
 
 .view-toggle > button:hover {
-    background: var(--bg-hover);
+    background: #5a6268;
 }
 
 /* 선택 영역 이동 */
@@ -545,15 +604,15 @@ body {
     padding: 10px 20px;
     font-size: 14px;
     cursor: pointer;
-    border: 1px solid var(--accent-color);
-    background: var(--accent-color);
+    border: 1px solid #17a2b8;
+    background: #17a2b8;
     color: #fff;
     border-radius: 4px;
     transition: background 0.2s;
 }
 
 .move-text-wrapper button:hover:not(:disabled) {
-    background: var(--accent-hover);
+    background: #138496;
 }
 
 .move-text-wrapper button:disabled {
@@ -570,7 +629,7 @@ body {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     min-width: 180px;
     z-index: 100;
     max-height: 250px;
@@ -599,48 +658,71 @@ body {
     font-weight: bold;
 }
 
-/* 상태바 */
+/* 상태바 (에디터 바로 아래) */
 .status-bar {
     width: 100%;
-    max-width: 540px;
-    margin-top: 15px;
-    padding: 10px 15px;
+    margin-top: 8px;
+    padding: 10px 14px;
     background-color: var(--bg-tertiary);
-    color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 13px;
 }
 
-.count-toggles {
+.status-left {
     display: flex;
-    gap: 8px;
+    align-items: center;
 }
 
-.count-toggles button {
-    min-width: 80px;
-    padding: 5px 10px;
-    font-size: 12px;
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-dot.synced {
     background: var(--success-color);
-    color: #fff;
-    border: none;
+}
+
+.status-left .sync-status {
+    color: var(--text-muted);
+}
+
+.status-left .sync-status.synced {
+    color: var(--text-secondary);
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-toggle-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     cursor: pointer;
-    transition: background 0.2s;
-    text-align: center;
+    transition: all 0.2s;
 }
 
-.count-toggles button:hover {
-    opacity: 0.9;
+.status-toggle-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
 }
 
-.count-value {
-    font-weight: bold;
-    color: var(--accent-color);
+.char-count-display {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 /* 링크 컨트롤 */
@@ -715,43 +797,7 @@ body {
 }
 
 /* Import/Export 버튼 */
-.file-buttons {
-    width: 100%;
-    max-width: 540px;
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-}
-
-.file-btn {
-    flex: 1;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.file-btn.import-btn {
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-}
-
-.file-btn.import-btn:hover {
-    background-color: var(--bg-hover);
-}
-
-.file-btn.export-btn {
-    background-color: var(--success-color);
-    color: #fff;
-}
-
-.file-btn.export-btn:hover {
-    opacity: 0.9;
-}
+#file-input, #section-file-input { display: none; }
 
 /* 모달 */
 .modal {
@@ -776,7 +822,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--modal-overlay);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -785,7 +831,7 @@ body {
     border-radius: 8px;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 4px 20px var(--shadow);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
@@ -897,24 +943,21 @@ body {
     opacity: 0.9;
 }
 
-#file-input, #section-file-input { display: none; }
-
 /* 드래그 앤 드롭 활성화 */
 .drag-active .editor-area {
-    outline: 3px dashed #007bff;
+    outline: 3px dashed var(--accent-color);
     outline-offset: -3px;
-    background-color: #e8f4ff;
+    background-color: var(--bg-hover);
 }
 
 /* 토스트 알림 */
 #toast {
     visibility: hidden;
     min-width: 200px;
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
+    background-color: #333;
+    color: #fff;
     text-align: center;
     border-radius: 5px;
-    border: 1px solid var(--border-color);
     padding: 10px;
     position: fixed;
     bottom: 30px;
@@ -922,7 +965,6 @@ body {
     transform: translateX(-50%);
     font-size: 14px;
     z-index: 100;
-    box-shadow: 0 4px 12px var(--shadow);
 }
 
 #toast.show {

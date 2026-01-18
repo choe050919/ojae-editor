@@ -3,17 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Novel Studio</title>
+    <title>Ojae Editor</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-    <div class="top-bar">
-        <button id="btn-theme" class="theme-toggle">☀️</button>
-        <div class="sync-status" id="sync-status">연결 중...</div>
+<!-- 헤더 (바 형태) -->
+<header class="main-header">
+    <div class="header-left">
+        <div class="logo">
+            <i class="ph ph-note-pencil"></i>
+            <span>Ojae Editor</span>
+        </div>
     </div>
+    <div class="header-right">
+        <button class="header-btn" onclick="openImportModal()">
+            <i class="ph ph-folder-open"></i>
+            <span>불러오기</span>
+        </button>
+        <button class="header-btn" onclick="openExportModal()">
+            <i class="ph ph-download-simple"></i>
+            <span>내보내기</span>
+        </button>
+        <div class="header-divider"></div>
+        <button id="btn-theme" class="icon-btn" title="테마 전환"><i class="ph ph-sun"></i></button>
+    </div>
+</header>
+
+<div class="main-container">
     
     <input type="text" id="novel-title" placeholder="전체 제목을 입력하세요">
     
@@ -36,6 +55,19 @@
                 <div class="preview-notice">📖 읽기 전용 모드 — 편집하려면 "편집 모드" 버튼을 누르세요</div>
                 <div id="preview-content"></div>
             </div>
+            
+            <!-- 상태바 (에디터 바로 아래) -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="sync-status" id="sync-status">연결 중...</span>
+                </div>
+                <div class="status-right">
+                    <button id="scope-toggle" class="status-toggle-btn" onclick="toggleScope()">현재 섹션</button>
+                    <button id="space-toggle" class="status-toggle-btn" onclick="toggleSpace()">공백 포함</button>
+                    <span class="char-count-display"><span id="char-count">0</span>자</span>
+                </div>
+            </div>
         </div>
         
         <div class="section-sidebar">
@@ -52,14 +84,6 @@
         </div>
     </div>
 
-    <div class="status-bar">
-        <div class="count-toggles">
-            <button id="scope-toggle" onclick="toggleScope()">현재 섹션</button>
-            <button id="space-toggle" onclick="toggleSpace()">공백 포함</button>
-        </div>
-        <span><span id="char-count" class="count-value">0</span> 자</span>
-    </div>
-
     <div class="link-controls">
         <span class="link-label">저장 링크:</span>
         <button class="link-btn" id="link-toggle-btn" onclick="toggleLinkBox()">🔗 보기</button>
@@ -70,60 +94,55 @@
         <span>내 저장 링크:</span>
         <input type="text" id="my-link" readonly onclick="this.select()">
     </div>
-
-    <div class="file-buttons">
-        <button class="file-btn import-btn" onclick="openImportModal()">불러오기</button>
-        <button class="file-btn export-btn" onclick="openExportModal()">내보내기</button>
-    </div>
-    
-    <!-- Import 모달 -->
-    <div id="import-modal" class="modal hidden">
-        <div class="modal-overlay" onclick="closeImportModal()"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>불러오기</h3>
-                <button class="modal-close" onclick="closeImportModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <button class="modal-action-btn" onclick="triggerImport(); closeImportModal();">전체 파일 불러오기</button>
-                <button class="modal-action-btn" onclick="triggerSectionImport(); closeImportModal();">섹션 파일 불러오기</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Export 모달 -->
-    <div id="export-modal" class="modal hidden">
-        <div class="modal-overlay" onclick="closeExportModal()"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>내보내기</h3>
-                <button class="modal-close" onclick="closeExportModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-field">
-                    <label>포맷</label>
-                    <select id="export-format" onchange="updateFormatDescription()">
-                        <option value="editable">백업용 (.txt)</option>
-                        <option value="readable">완성본 (.txt)</option>
-                    </select>
-                </div>
-                <div class="modal-field-desc" id="format-desc">불러오기 가능</div>
-                <div class="modal-field">
-                    <label>범위</label>
-                    <select id="export-scope" onchange="updateScopeDescription()">
-                        <option value="all">전체</option>
-                        <option value="current">현재 섹션</option>
-                    </select>
-                </div>
-                <div class="modal-field-desc" id="scope-desc"></div>
-                <button class="modal-submit-btn" onclick="executeExport()">내보내기</button>
-            </div>
-        </div>
-    </div>
-    
-    <input type="file" id="file-input" accept=".txt" onchange="handleFileSelect(event)">
-    <input type="file" id="section-file-input" accept=".txt" onchange="handleSectionFileSelect(event)">
 </div>
+
+<!-- Import 모달 -->
+<div id="import-modal" class="modal hidden">
+    <div class="modal-overlay" onclick="closeImportModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>불러오기</h3>
+            <button class="modal-close" onclick="closeImportModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <button class="modal-action-btn" onclick="triggerImport(); closeImportModal();">전체 파일 불러오기</button>
+            <button class="modal-action-btn" onclick="triggerSectionImport(); closeImportModal();">섹션 파일 불러오기</button>
+        </div>
+    </div>
+</div>
+
+<!-- Export 모달 -->
+<div id="export-modal" class="modal hidden">
+    <div class="modal-overlay" onclick="closeExportModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>내보내기</h3>
+            <button class="modal-close" onclick="closeExportModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-field">
+                <label>포맷</label>
+                <select id="export-format" onchange="updateFormatDescription()">
+                    <option value="editable">백업용 (.txt)</option>
+                    <option value="readable">완성본 (.txt)</option>
+                </select>
+            </div>
+            <div class="modal-field-desc" id="format-desc">불러오기 가능</div>
+            <div class="modal-field">
+                <label>범위</label>
+                <select id="export-scope" onchange="updateScopeDescription()">
+                    <option value="all">전체</option>
+                    <option value="current">현재 섹션</option>
+                </select>
+            </div>
+            <div class="modal-field-desc" id="scope-desc"></div>
+            <button class="modal-submit-btn" onclick="executeExport()">내보내기</button>
+        </div>
+    </div>
+</div>
+
+<input type="file" id="file-input" accept=".txt" onchange="handleFileSelect(event)">
+<input type="file" id="section-file-input" accept=".txt" onchange="handleSectionFileSelect(event)">
 
 <div id="toast">알림</div>
 

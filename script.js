@@ -18,7 +18,9 @@ const btnTheme = document.getElementById('btn-theme');
 
 function applyTheme(isDark, { persist = true } = {}) {
     document.documentElement.classList.toggle('dark', isDark);
-    btnTheme.textContent = isDark ? '☀️' : '🌙';
+    btnTheme.innerHTML = isDark 
+        ? '<i class="ph ph-sun"></i>' 
+        : '<i class="ph ph-moon"></i>';
     if (persist) {
         localStorage.setItem('novelTheme', isDark ? 'dark' : 'light');
     }
@@ -45,6 +47,7 @@ const editor = document.getElementById('novel-editor');
 const countDisplay = document.getElementById('char-count');
 const toast = document.getElementById('toast');
 const syncStatus = document.getElementById('sync-status');
+const statusDot = document.getElementById('status-dot');
 const myLinkInput = document.getElementById('my-link');
 const sectionListEl = document.getElementById('section-list');
 const typeToggleBtn = document.getElementById('type-toggle-btn');
@@ -125,19 +128,22 @@ docRef.on('value', (snapshot) => {
     renderSectionList();
     loadSection(currentSectionIndex);
     
-    syncStatus.textContent = '동기화됨 ✓';
+    syncStatus.textContent = '동기화됨';
     syncStatus.classList.add('synced');
+    statusDot.classList.add('synced');
     isLoadingFromServer = false;
 });
 
 // 연결 상태 모니터링
 db.ref('.info/connected').on('value', (snapshot) => {
     if (snapshot.val() === true) {
-        syncStatus.textContent = '동기화됨 ✓';
+        syncStatus.textContent = '동기화됨';
         syncStatus.classList.add('synced');
+        statusDot.classList.add('synced');
     } else {
         syncStatus.textContent = '오프라인';
         syncStatus.classList.remove('synced');
+        statusDot.classList.remove('synced');
     }
 });
 
@@ -356,6 +362,7 @@ function handleInput() {
     
     syncStatus.textContent = '저장 중...';
     syncStatus.classList.remove('synced');
+    statusDot.classList.remove('synced');
     
     clearTimeout(saveTimer);
     saveTimer = setTimeout(saveToFirebase, 500);
@@ -370,10 +377,13 @@ function saveToFirebase() {
         sections: sections,
         updatedAt: Date.now()
     }).then(() => {
-        syncStatus.textContent = '동기화됨 ✓';
+        syncStatus.textContent = '동기화됨';
         syncStatus.classList.add('synced');
+        statusDot.classList.add('synced');
     }).catch((error) => {
         syncStatus.textContent = '저장 실패';
+        syncStatus.classList.remove('synced');
+        statusDot.classList.remove('synced');
         console.error('저장 오류:', error);
     });
 }
@@ -838,8 +848,8 @@ resizeHandle.addEventListener('mousedown', (e) => {
 document.addEventListener('mousemove', (e) => {
     if (!isResizing) return;
     
-    // 우상단 고정, 좌하단으로 늘어남
-    const deltaX = startX - e.clientX; // 왼쪽으로 이동 = 너비 증가
+    // 좌상단 고정, 우하단으로 늘어남
+    const deltaX = e.clientX - startX; // 오른쪽으로 이동 = 너비 증가
     const newWidth = Math.max(200, Math.min(800, startWidth + deltaX)); // 200~800px 제한
     
     youtubePanel.style.width = newWidth + 'px';
