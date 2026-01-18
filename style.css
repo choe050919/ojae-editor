@@ -43,12 +43,12 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 50px;
+    height: 55px;
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 540px) 1fr;
     align-items: center;
-    justify-content: space-between;
     padding: 0 20px;
     z-index: 1000;
 }
@@ -72,10 +72,31 @@
     font-size: 1.3rem;
 }
 
+/* 전체 제목 입력칸 */
+#novel-title {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 540px;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-primary);
+    border: none;
+    border-bottom: 2px solid transparent;
+    outline: none;
+    background-color: transparent;
+    transition: border-color 0.2s;
+}
+
+#novel-title:focus {
+    border-bottom-color: var(--accent-color);
+}
+
 .header-right {
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-self: end;
 }
 
 .header-btn {
@@ -139,7 +160,7 @@ body {
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding: 70px 20px 40px 20px;
+    padding: 75px 20px 40px 20px;
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     min-height: 100vh;
     color: var(--text-primary);
@@ -162,27 +183,6 @@ body {
     color: var(--success-color);
 }
 
-/* 전체 제목 입력칸 */
-#novel-title {
-    width: 100%;
-    max-width: 540px;
-    padding: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--text-primary);
-    border: none;
-    border-bottom: 2px solid var(--border-color);
-    outline: none;
-    background-color: transparent;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
-}
-
-#novel-title:focus {
-    border-bottom-color: var(--accent-color);
-}
-
 #novel-title::placeholder {
     color: var(--text-muted);
 }
@@ -199,7 +199,7 @@ body {
 .youtube-panel {
     position: fixed;
     left: 20px;
-    top: 70px;
+    top: 75px;
     width: 320px;
     display: flex;
     flex-direction: column;
@@ -448,7 +448,7 @@ body {
 .section-sidebar {
     position: fixed;
     right: 20px;
-    top: 70px;
+    top: 75px;
     width: 160px;
     display: flex;
     flex-direction: column;
