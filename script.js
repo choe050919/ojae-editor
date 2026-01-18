@@ -48,7 +48,6 @@ const countDisplay = document.getElementById('char-count');
 const toast = document.getElementById('toast');
 const syncStatus = document.getElementById('sync-status');
 const statusDot = document.getElementById('status-dot');
-const myLinkInput = document.getElementById('my-link');
 const sectionListEl = document.getElementById('section-list');
 const typeToggleBtn = document.getElementById('type-toggle-btn');
 const editorArea = document.querySelector('.editor-area');
@@ -59,7 +58,6 @@ if (!docId) {
     docId = generateId();
     window.location.hash = docId;
 }
-myLinkInput.value = window.location.href;
 
 // 섹션 데이터
 let sections = [];
