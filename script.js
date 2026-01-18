@@ -281,8 +281,15 @@ function loadSection(index) {
 // 타입 UI 업데이트
 function updateTypeUI(type) {
     const isNote = type === 'note';
-    typeToggleBtn.textContent = isNote ? '📝 노트' : '📄 본문';
-    typeToggleBtn.classList.toggle('note', isNote);
+    const btn = document.getElementById('type-toggle-btn');
+    const icon = btn.querySelector('i');
+    const text = btn.querySelector('span');
+    
+    // 텍스트 및 아이콘 변경
+    text.textContent = isNote ? '노트' : '본문';
+    icon.className = isNote ? 'ph ph-note' : 'ph ph-file-text';
+    
+    // 노트 모드 클래스 토글 (CSS에서 색상 처리)
     editorArea.classList.toggle('note-mode', isNote);
 }
 
@@ -663,21 +670,38 @@ function copySaveLink() {
 // 마크다운 보기 토글
 const markdownPreview = document.getElementById('markdown-preview');
 const previewContent = document.getElementById('preview-content');
-const toggleViewBtn = document.getElementById('toggle-view-btn');
 let isPreviewMode = false;
 
 function toggleView() {
     isPreviewMode = !isPreviewMode;
     
+    // HTML의 실제 ID인 'view-toggle-btn'을 가져옵니다.
+    const btn = document.getElementById('view-toggle-btn');
+    const btnIcon = btn.querySelector('i');
+    const btnText = btn.querySelector('span');
+    
     if (isPreviewMode) {
+        // 1. 뷰어 모드로 전환
         previewContent.innerHTML = marked.parse(editor.value);
         editor.classList.add('hidden');
         markdownPreview.classList.remove('hidden');
-        toggleViewBtn.textContent = '편집 모드';
+        
+        // 2. 버튼 UI 변경 (쓰기 -> 읽기)
+        btn.classList.add('reading-mode'); // CSS 스타일 적용
+        btnIcon.className = 'ph ph-book-open';
+        btnText.textContent = '읽기';
+        btn.title = "편집 모드로 돌아가기";
+        
     } else {
+        // 1. 에디터 모드로 전환
         editor.classList.remove('hidden');
         markdownPreview.classList.add('hidden');
-        toggleViewBtn.textContent = '마크다운 보기';
+        
+        // 2. 버튼 UI 변경 (읽기 -> 쓰기)
+        btn.classList.remove('reading-mode');
+        btnIcon.className = 'ph ph-pencil-simple';
+        btnText.textContent = '쓰기';
+        btn.title = "읽기/쓰기 모드 전환";
     }
 }
 
