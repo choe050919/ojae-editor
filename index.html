@@ -19,6 +19,10 @@
         </div>
     </div>
     <div class="header-right">
+        <button class="header-btn" onclick="openSaveModal()">
+            <i class="ph ph-floppy-disk"></i>
+            <span>저장하기</span>
+        </button>
         <button class="header-btn" onclick="openImportModal()">
             <i class="ph ph-folder-open"></i>
             <span>불러오기</span>
@@ -94,17 +98,6 @@
             <div id="move-dropdown" class="move-dropdown hidden"></div>
         </div>
     </div>
-
-    <div class="link-controls">
-        <span class="link-label">저장 링크:</span>
-        <button class="link-btn" id="link-toggle-btn" onclick="toggleLinkBox()">🔗 보기</button>
-        <button class="link-btn" id="link-copy-btn" onclick="copyLinkDirect()">📋 복사</button>
-    </div>
-    
-    <div class="link-box hidden" id="link-box">
-        <span>내 저장 링크:</span>
-        <input type="text" id="my-link" readonly onclick="this.select()">
-    </div>
 </div>
 
 <!-- Import 모달 -->
@@ -148,6 +141,43 @@
             </div>
             <div class="modal-field-desc" id="scope-desc"></div>
             <button class="modal-submit-btn" onclick="executeExport()">내보내기</button>
+        </div>
+    </div>
+</div>
+
+<!-- Save 모달 -->
+<div id="save-modal" class="modal hidden">
+    <div class="modal-overlay" onclick="closeSaveModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>저장 및 공유</h3>
+            <button class="modal-close" onclick="closeSaveModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; padding: 30px 0 20px 0;">
+                <div style="font-size: 64px; color: var(--success-color); margin-bottom: 15px; line-height: 1;">
+                    <i class="ph ph-cloud-check"></i>
+                </div>
+                <p style="margin: 0; font-size: 18px; color: var(--text-primary); line-height: 1.5;">
+                    이 문서는 클라우드에<br>
+                    <b style="color: var(--success-color);">자동 저장</b>되고 있습니다.
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 13px; color: var(--text-muted);">
+                    별도의 저장 버튼을 누르지 않아도 됩니다.
+                </p>
+            </div>
+            
+            <div class="modal-field" style="flex-direction: column; align-items: stretch; gap: 8px; margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+                <label style="width: 100%; font-size: 13px; font-weight: 600; color: var(--text-secondary);">문서 다시 열기 링크</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="save-link-input" readonly 
+                           style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary); font-family: monospace; font-size: 12px;">
+                    <button onclick="copySaveLink(event)" 
+                            style="padding: 0 18px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; color: var(--text-primary); font-weight: 500; white-space: nowrap; transition: background 0.2s;">
+                        복사
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

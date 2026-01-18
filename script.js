@@ -444,19 +444,6 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
 }
 
-// 링크 토글
-function toggleLinkBox() {
-    const linkBox = document.getElementById('link-box');
-    linkBox.classList.toggle('hidden');
-}
-
-// 링크 직접 복사
-function copyLinkDirect() {
-    myLinkInput.select();
-    document.execCommand('copy');
-    showToast('링크가 복사되었습니다');
-}
-
 // 파일 관리 토글
 // Import 모달
 function openImportModal() {
@@ -632,6 +619,47 @@ function exportTxt() {
     
     URL.revokeObjectURL(url);
     showToast(`저장됨: ${fileName}`);
+}
+
+// ===== [NEW] 저장하기 모달 기능 =====
+
+function openSaveModal() {
+    // 1. 현재 주소 가져오기
+    const currentUrl = window.location.href;
+    const linkInput = document.getElementById('save-link-input');
+    
+    // 2. 인풋에 주소 넣기
+    linkInput.value = currentUrl;
+    
+    // 3. 모달 열기
+    document.getElementById('save-modal').classList.remove('hidden');
+    
+    // 4. (선택사항) 주소 전체 선택해두기 - 사용자 편의
+    setTimeout(() => linkInput.select(), 100);
+}
+
+function closeSaveModal() {
+    document.getElementById('save-modal').classList.add('hidden');
+}
+
+function copySaveLink() {
+    const linkInput = document.getElementById('save-link-input');
+    linkInput.select();
+    document.execCommand('copy');
+    
+    // 복사 버튼 피드백 (잠깐 '완료!'로 바뀜)
+    const btn = event.currentTarget; // 클릭된 버튼
+    const originalText = btn.innerText;
+    
+    btn.innerText = '완료!';
+    btn.style.color = 'var(--success-color)';
+    
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.color = 'var(--text-primary)';
+    }, 1500);
+    
+    showToast('링크가 복사되었습니다');
 }
 
 // 마크다운 보기 토글
