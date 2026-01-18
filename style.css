@@ -752,10 +752,8 @@ body {
 .status-bar {
     width: 100%;
     margin-top: 8px;
-    padding: 10px 14px;
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
+    background-color: transparent;
+    border: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
