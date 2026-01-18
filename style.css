@@ -193,12 +193,93 @@ body {
     width: 320px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     background: var(--bg-primary);
-    padding: 10px;
     box-sizing: border-box;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+}
+
+.panel-input {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.panel-input:focus {
+    border-color: var(--accent-color);
+}
+
+.panel-input::placeholder {
+    color: var(--text-muted);
+}
+
+.radio-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.radio-label i {
+    font-size: 1.1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.radio-label .ph-youtube-logo {
+    color: #ff0000;
+}
+
+.radio-label .ph-music-notes {
+    color: var(--accent-color);
+}
+
+.panel-toggle-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.panel-toggle-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.youtube-content {
+    padding: 0 10px 10px 10px;
+}
+
+.youtube-content.hidden {
+    display: none;
 }
 
 .resize-handle {
@@ -213,28 +294,6 @@ body {
 
 .resize-handle:hover {
     background: linear-gradient(-45deg, var(--accent-color) 50%, transparent 50%);
-}
-
-#youtube-input {
-    width: 100%;
-    height: 36px;
-    flex-shrink: 0;
-    padding: 10px 12px;
-    font-size: 13px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    box-sizing: border-box;
-    outline: none;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-#youtube-input:focus {
-    border-color: var(--accent-color);
-}
-
-#youtube-input::placeholder {
-    color: var(--text-muted);
 }
 
 .youtube-player {

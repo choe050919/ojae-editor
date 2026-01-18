@@ -38,9 +38,20 @@
     
     <div class="editor-wrapper">
         <div class="youtube-panel" id="youtube-panel">
-            <input type="text" id="youtube-input" placeholder="YouTube 영상 또는 재생목록 링크 붙여넣기">
-            <div class="youtube-player">
-                <iframe id="youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="panel-header">
+                <input type="text" id="youtube-input" class="panel-input" placeholder="YouTube 링크 붙여넣기">
+                <div id="radio-label" class="radio-label hidden">
+                    <i id="radio-icon" class="ph ph-youtube-logo"></i>
+                    <span id="radio-text">YouTube Player</span>
+                </div>
+                <button id="panel-toggle-btn" class="panel-toggle-btn" onclick="toggleYoutubePanel()" title="접기/펼치기">
+                    <i class="ph ph-caret-up"></i>
+                </button>
+            </div>
+            <div class="youtube-content" id="youtube-content">
+                <div class="youtube-player">
+                    <iframe id="youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
             </div>
             <div class="resize-handle" id="youtube-resize-handle"></div>
         </div>

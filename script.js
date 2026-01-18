@@ -813,11 +813,53 @@ function parseNewFormatToSections(text) {
 const youtubeInput = document.getElementById('youtube-input');
 const youtubeIframe = document.getElementById('youtube-iframe');
 const youtubePanel = document.getElementById('youtube-panel');
+const youtubeContent = document.getElementById('youtube-content');
+const radioLabel = document.getElementById('radio-label');
+const panelToggleBtn = document.getElementById('panel-toggle-btn');
 const resizeHandle = document.getElementById('youtube-resize-handle');
+
+// 패널 접기/펼치기 상태
+let isYoutubePanelCollapsed = false;
+
+function toggleYoutubePanel() {
+    isYoutubePanelCollapsed = !isYoutubePanelCollapsed;
+    
+    const radioIcon = document.getElementById('radio-icon');
+    const radioText = document.getElementById('radio-text');
+    
+    if (isYoutubePanelCollapsed) {
+        // 접기
+        youtubeContent.classList.add('hidden');
+        youtubeInput.classList.add('hidden');
+        resizeHandle.classList.add('hidden');
+        panelToggleBtn.innerHTML = '<i class="ph ph-caret-down"></i>';
+        
+        // 링크 유무에 따라 아이콘과 문구 변경
+        if (youtubeInput.value.trim()) {
+            radioIcon.className = 'ph ph-music-notes';
+            radioText.textContent = 'Audio Playing...';
+        } else {
+            radioIcon.className = 'ph ph-youtube-logo';
+            radioText.textContent = 'YouTube Player';
+        }
+        radioLabel.classList.remove('hidden');
+    } else {
+        // 펼치기
+        youtubeContent.classList.remove('hidden');
+        youtubeInput.classList.remove('hidden');
+        resizeHandle.classList.remove('hidden');
+        radioLabel.classList.add('hidden');
+        panelToggleBtn.innerHTML = '<i class="ph ph-caret-up"></i>';
+    }
+    
+    // 상태 저장
+    localStorage.setItem('youtubePanelCollapsed', isYoutubePanelCollapsed);
+}
 
 // localStorage에서 YouTube 상태 복원
 const savedYoutubeWidth = localStorage.getItem('youtubeWidth');
 const savedYoutubeUrl = localStorage.getItem('youtubeUrl');
+const savedPanelCollapsed = localStorage.getItem('youtubePanelCollapsed');
 
 if (savedYoutubeWidth) {
     youtubePanel.style.width = savedYoutubeWidth + 'px';
@@ -829,6 +871,11 @@ if (savedYoutubeUrl) {
     if (embedUrl) {
         youtubeIframe.src = embedUrl;
     }
+}
+
+// 접힘 상태 복원
+if (savedPanelCollapsed === 'true') {
+    toggleYoutubePanel();
 }
 
 // 리사이즈 기능
