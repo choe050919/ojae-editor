@@ -37,6 +37,10 @@
     --read-bg: #2c332e;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* ===== 헤더 (바 형태) ===== */
 .main-header {
     position: fixed;
