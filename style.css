@@ -557,19 +557,33 @@ body {
 }
 
 .add-section-btn {
+    width: 100%;             /* 가로 꽉 차게 */
     margin-top: 10px;
-    padding: 10px;
-    background: var(--success-color);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
+    padding: 12px;           /* 터치 영역 확보 */
+    
+    background: transparent; /* 배경 투명하게 (눈부심 방지) */
+    border: 1px dashed var(--border-color); /* 점선 테두리 */
+    border-radius: 6px;
+    
+    color: var(--text-muted); /* 회색 글씨 (눈 편안함) */
     font-size: 14px;
+    font-weight: 500;
+    
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    
+    /* 아이콘과 텍스트 정렬 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .add-section-btn:hover {
-    opacity: 0.9;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background-color: var(--bg-hover);
+    border-style: solid; /* 호버 시 실선으로 바뀌며 "누를 수 있음" 강조 (선택사항) */
 }
 
 /* 마크다운 미리보기 */
