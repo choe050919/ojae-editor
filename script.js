@@ -478,8 +478,10 @@ function updateFormatDescription() {
     const format = document.getElementById('export-format').value;
     const descEl = document.getElementById('format-desc');
     
-    if (format === 'editable') {
-        descEl.textContent = '불러오기 가능';
+    if (format === 'json') {
+        descEl.textContent = '불러오기 가능 (권장)';
+    } else if (format === 'editable') {
+        descEl.textContent = '불러오기 가능 (하위 호환용)';
     } else if (format === 'readable') {
         descEl.textContent = '불러오기 불가, 노트 제외';
     }
@@ -515,8 +517,26 @@ function executeExport() {
     
     if (scope === 'all') {
         // 전체 내보내기
-        if (format === 'editable') {
-            // 편집용: 메타데이터 포함
+        if (format === 'json') {
+            // JSON 백업 (권장)
+            const backup = {
+                version: 1,
+                type: 'full',
+                exportedAt: new Date().toISOString(),
+                title: novelTitle,
+                sections: sections.map(s => ({
+                    id: s.id,
+                    title: s.title || '',
+                    content: s.content || '',
+                    type: s.type || 'body'
+                }))
+            };
+            content = JSON.stringify(backup, null, 2);
+            
+            const safeTitle = (novelTitle || '소설').replace(/[\/\\?%*:|"<>]/g, '-');
+            fileName = `${safeTitle}-${dateStr}.json`;
+        } else if (format === 'editable') {
+            // 레거시 txt 백업
             const meta = {
                 version: 2,
                 title: novelTitle,
@@ -536,6 +556,9 @@ function executeExport() {
                 }
                 content += section.content + '\n\n';
             });
+            
+            const safeTitle = (novelTitle || '소설').replace(/[\/\\?%*:|"<>]/g, '-');
+            fileName = `${safeTitle}-${dateStr}.txt`;
         } else {
             // 읽기용: 메타데이터 없음, 본문만
             sections.forEach((section) => {
@@ -546,30 +569,45 @@ function executeExport() {
                     content += section.content + '\n\n';
                 }
             });
+            
+            const safeTitle = (novelTitle || '소설').replace(/[\/\\?%*:|"<>]/g, '-');
+            fileName = `${safeTitle}-${dateStr}.txt`;
         }
-        
-        const safeTitle = (novelTitle || '소설').replace(/[\/\\?%*:|"<>]/g, '-');
-        fileName = `${safeTitle}-${dateStr}.txt`;
     } else {
         // 현재 섹션 내보내기
         const section = sections[currentSectionIndex];
+        const sectionTitle = section.title || `섹션${currentSectionIndex + 1}`;
+        const safeTitle = sectionTitle.replace(/[\/\\?%*:|"<>]/g, '-');
         
-        if (format === 'editable') {
+        if (format === 'json') {
+            // JSON 섹션 백업
+            const backup = {
+                version: 1,
+                type: 'section',
+                exportedAt: new Date().toISOString(),
+                title: section.title || '',
+                content: section.content || '',
+                sectionType: section.type || 'body'
+            };
+            content = JSON.stringify(backup, null, 2);
+            fileName = `${safeTitle}-${dateStr}.json`;
+        } else if (format === 'editable') {
+            // 레거시 txt 섹션
             content = `<!--- NOVEL_SECTION --->\n${section.content}`;
+            fileName = `${safeTitle}-${dateStr}.txt`;
         } else {
+            // 읽기용
             if (section.title) {
                 content = `# ${section.title}\n\n`;
             }
             content += section.content;
+            fileName = `${safeTitle}-${dateStr}.txt`;
         }
-        
-        const sectionTitle = section.title || `섹션${currentSectionIndex + 1}`;
-        const safeTitle = sectionTitle.replace(/[\/\\?%*:|"<>]/g, '-');
-        fileName = `${safeTitle}-${dateStr}.txt`;
     }
     
     // 파일 다운로드
-    const blob = new Blob([content.trim()], { type: 'text/plain;charset=utf-8' });
+    const mimeType = format === 'json' ? 'application/json;charset=utf-8' : 'text/plain;charset=utf-8';
+    const blob = new Blob([content.trim()], { type: mimeType });
     const url = URL.createObjectURL(blob);
     
     const a = document.createElement('a');
@@ -733,8 +771,10 @@ function handleFileSelect(event) {
 }
 
 function processFile(file) {
-    if (!file.name.toLowerCase().endsWith('.txt')) {
-        alert("txt 파일만 불러올 수 있습니다.");
+    const fileName = file.name.toLowerCase();
+    
+    if (!fileName.endsWith('.txt') && !fileName.endsWith('.json')) {
+        alert("txt 또는 json 파일만 불러올 수 있습니다.");
         return;
     }
 
@@ -742,6 +782,48 @@ function processFile(file) {
     reader.onload = function(e) {
         const text = e.target.result;
         
+        // JSON 파일 처리
+        if (fileName.endsWith('.json')) {
+            try {
+                const data = JSON.parse(text);
+                
+                // 섹션 파일인 경우
+                if (data.type === 'section') {
+                    alert("이 파일은 섹션 파일입니다.\n'섹션 파일 불러오기' 버튼을 사용해주세요.");
+                    return;
+                }
+                
+                // 전체 백업 파일 검증
+                if (!data.sections || !Array.isArray(data.sections)) {
+                    alert("올바른 백업 파일이 아닙니다.");
+                    return;
+                }
+                
+                const userConfirmed = confirm("현재 작성 중인 모든 섹션이 파일 내용으로 대체됩니다.\n계속하시겠습니까?");
+                if (!userConfirmed) return;
+                
+                novelTitle = data.title || '';
+                novelTitleInput.value = novelTitle;
+                sections = data.sections.map(s => ({
+                    id: s.id || generateId(),
+                    title: s.title || '',
+                    content: s.content || '',
+                    type: s.type || 'body'
+                }));
+                currentSectionIndex = 0;
+                
+                renderSectionList();
+                loadSection(0);
+                saveToFirebase();
+                
+                showToast(`${sections.length}개 섹션을 불러왔습니다`);
+            } catch (err) {
+                alert("파일을 파싱할 수 없습니다: " + err.message);
+            }
+            return;
+        }
+        
+        // 기존 txt 처리
         // 섹션 파일 체크 (전체 파일 버튼으로는 불가)
         if (text.startsWith('<!--- NOVEL_SECTION --->')) {
             alert("이 파일은 섹션 파일입니다.\n'섹션 파일 불러오기' 버튼을 사용하거나 드래그 앤 드롭으로 불러와주세요.");
@@ -1265,18 +1347,53 @@ function handleSectionFileSelect(event) {
 }
 
 function processSectionFile(file) {
-    if (!file.name.toLowerCase().endsWith('.txt')) {
-        alert("txt 파일만 불러올 수 있습니다.");
+    const fileName = file.name.toLowerCase();
+    
+    if (!fileName.endsWith('.txt') && !fileName.endsWith('.json')) {
+        alert("txt 또는 json 파일만 불러올 수 있습니다.");
         return;
     }
     
     const reader = new FileReader();
     reader.onload = function(e) {
-        let text = e.target.result;
+        const text = e.target.result;
         
-        // 메타데이터 제거 (있으면)
-        if (text.startsWith('<!--- NOVEL_SECTION --->')) {
-            text = text.replace('<!--- NOVEL_SECTION --->\n', '');
+        let sectionTitle = '';
+        let sectionContent = '';
+        let sectionType = 'body';
+        
+        // JSON 파일 처리
+        if (fileName.endsWith('.json')) {
+            try {
+                const data = JSON.parse(text);
+                
+                // 전체 백업 파일인 경우
+                if (data.type === 'full' || (data.sections && Array.isArray(data.sections))) {
+                    alert("이 파일은 전체 백업 파일입니다.\n'전체 파일 불러오기' 버튼을 사용해주세요.");
+                    return;
+                }
+                
+                // 섹션 파일 검증
+                if (data.type !== 'section') {
+                    alert("올바른 섹션 파일이 아닙니다.");
+                    return;
+                }
+                
+                sectionTitle = data.title || '';
+                sectionContent = data.content || '';
+                sectionType = data.sectionType || 'body';
+            } catch (err) {
+                alert("파일을 파싱할 수 없습니다: " + err.message);
+                return;
+            }
+        } else {
+            // 기존 txt 처리
+            sectionContent = text;
+            
+            // 메타데이터 제거 (있으면)
+            if (sectionContent.startsWith('<!--- NOVEL_SECTION --->')) {
+                sectionContent = sectionContent.replace('<!--- NOVEL_SECTION --->\n', '');
+            }
         }
         
         // 사용자 선택: 현재 섹션 대체 / 새 섹션 / 취소
@@ -1286,21 +1403,26 @@ function processSectionFile(file) {
             "취소 = 새 섹션으로 추가합니다"
         );
         
-        if (choice === null) return; // 실제로는 취소 버튼이 null을 반환하지 않지만 로직상 표현
+        if (choice === null) return;
         
         if (choice) {
             // 현재 섹션 대체
-            sections[currentSectionIndex].content = text.trim();
+            if (sectionTitle) {
+                sections[currentSectionIndex].title = sectionTitle;
+            }
+            sections[currentSectionIndex].content = sectionContent.trim();
+            sections[currentSectionIndex].type = sectionType;
             loadSection(currentSectionIndex);
+            renderSectionList();
             saveToFirebase();
             showToast('현재 섹션을 업데이트했습니다');
         } else {
             // 새 섹션 추가
             const newSection = {
                 id: generateId(),
-                title: '',
-                content: text.trim(),
-                type: 'body'
+                title: sectionTitle,
+                content: sectionContent.trim(),
+                type: sectionType
             };
             sections.push(newSection);
             currentSectionIndex = sections.length - 1;

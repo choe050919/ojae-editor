@@ -134,7 +134,8 @@
             <div class="modal-field">
                 <label>포맷</label>
                 <select id="export-format" onchange="updateFormatDescription()">
-                    <option value="editable">백업용 (.txt)</option>
+                    <option value="json">백업용 (.json)</option>
+                    <option value="editable">백업용 (.txt) - 레거시</option>
                     <option value="readable">완성본 (.txt)</option>
                 </select>
             </div>
@@ -213,8 +214,8 @@
     </div>
 </div>
 
-<input type="file" id="file-input" accept=".txt" onchange="handleFileSelect(event)">
-<input type="file" id="section-file-input" accept=".txt" onchange="handleSectionFileSelect(event)">
+<input type="file" id="file-input" accept=".txt,.json" onchange="handleFileSelect(event)">
+<input type="file" id="section-file-input" accept=".txt,.json" onchange="handleSectionFileSelect(event)">
 
 <div id="toast">알림</div>
 
