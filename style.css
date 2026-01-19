@@ -891,6 +891,50 @@ body {
 /* Import/Export 버튼 */
 #file-input, #section-file-input { display: none; }
 
+/* 도움말 모달 */
+.help-modal-content {
+    max-height: 80vh;
+    width: 90%;
+    max-width: 500px;
+}
+
+.help-modal-body {
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.help-section {
+    margin-bottom: 24px;
+}
+
+.help-section:last-child {
+    margin-bottom: 0;
+}
+
+.help-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.help-section p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.shortcut-list {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.shortcut-placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 /* 모달 */
 .modal {
     position: fixed;

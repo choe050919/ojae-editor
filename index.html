@@ -17,6 +17,8 @@
             <i class="ph ph-note-pencil"></i>
             <span>Ojae Editor</span>
         </div>
+        <div class="header-divider"></div>
+        <button id="btn-help" class="icon-btn" onclick="openHelpModal()" title="도움말"><i class="ph ph-info"></i></button>
     </div>
     <input type="text" id="novel-title" placeholder="전체 제목을 입력하세요">
     <div class="header-right">
@@ -183,6 +185,30 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help 모달 -->
+<div id="help-modal" class="modal hidden">
+    <div class="modal-overlay" onclick="closeHelpModal()"></div>
+    <div class="modal-content help-modal-content">
+        <div class="modal-header">
+            <h3>도움말</h3>
+            <button class="modal-close" onclick="closeHelpModal()">×</button>
+        </div>
+        <div class="modal-body help-modal-body">
+            <section class="help-section">
+                <h4>Ojae Editor 소개</h4>
+                <p>Ojae Editor는 클라우드 기반 글쓰기 도구입니다. 작성한 내용은 자동으로 저장되며, 링크를 통해 어디서든 다시 열 수 있습니다.</p>
+            </section>
+
+            <section class="help-section">
+                <h4>단축키</h4>
+                <div class="shortcut-list">
+                    <p class="shortcut-placeholder">준비 중입니다.</p>
+                </div>
+            </section>
         </div>
     </div>
 </div>

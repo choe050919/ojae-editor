@@ -667,6 +667,15 @@ function copySaveLink() {
     showToast('링크가 복사되었습니다');
 }
 
+// ===== 도움말 모달 =====
+function openHelpModal() {
+    document.getElementById('help-modal').classList.remove('hidden');
+}
+
+function closeHelpModal() {
+    document.getElementById('help-modal').classList.add('hidden');
+}
+
 // 마크다운 보기 토글
 const markdownPreview = document.getElementById('markdown-preview');
 const previewContent = document.getElementById('preview-content');
