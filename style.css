@@ -60,7 +60,7 @@
 .header-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
 }
 
 .logo {
@@ -99,7 +99,7 @@
 .header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     justify-self: end;
 }
 
