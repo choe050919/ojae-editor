@@ -514,7 +514,7 @@ body {
     position: fixed;
     right: 20px;
     top: 75px;
-    width: 160px;
+    width: 320px;
     display: flex;
     flex-direction: column;
 }
