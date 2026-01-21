@@ -64,6 +64,16 @@ function updateFullscreenIcon() {
     }
 }
 
+function toggleFocusMode() {
+    const btn = document.getElementById('btn-focus');
+    const icon = btn.querySelector('i');
+    
+    document.body.classList.toggle('focus-mode');
+    
+    const isFocus = document.body.classList.contains('focus-mode');
+    icon.className = isFocus ? 'ph ph-eye-closed' : 'ph ph-eye';
+}
+
 document.addEventListener('fullscreenchange', updateFullscreenIcon);
 
 // DOM 요소

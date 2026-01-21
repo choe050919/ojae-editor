@@ -1263,3 +1263,11 @@ body {
         max-height: 30vh;
     }
 }
+
+/* 포커스 모드 */
+.focus-mode .header-left { visibility: hidden; }
+.focus-mode .header-right > *:not(#btn-focus) { visibility: hidden; }
+.focus-mode .header-divider { display: none; }
+.focus-mode .youtube-panel { display: none; }
+.focus-mode .section-sidebar { display: none; }
+.focus-mode .status-bar { display: none; }
