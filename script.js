@@ -445,21 +445,27 @@ function updateCharCount() {
 }
 
 // 글자 수 계산 설정
-let countScope = 'section'; // 'section' | 'all'
-let countSpace = 'include'; // 'include' | 'exclude'
+let countScope = localStorage.getItem('countScope') || 'section'; // 'section' | 'all'
+let countSpace = localStorage.getItem('countSpace') || 'include'; // 'include' | 'exclude'
 
 const scopeToggle = document.getElementById('scope-toggle');
 const spaceToggle = document.getElementById('space-toggle');
 
+// 초기 버튼 텍스트 반영
+scopeToggle.textContent = (countScope === 'section') ? '현재 섹션' : '전체';
+spaceToggle.textContent = (countSpace === 'include') ? '공백 포함' : '공백 제외';
+
 function toggleScope() {
     countScope = (countScope === 'section') ? 'all' : 'section';
     scopeToggle.textContent = (countScope === 'section') ? '현재 섹션' : '전체';
+    localStorage.setItem('countScope', countScope);
     updateCharCount();
 }
 
 function toggleSpace() {
     countSpace = (countSpace === 'include') ? 'exclude' : 'include';
     spaceToggle.textContent = (countSpace === 'include') ? '공백 포함' : '공백 제외';
+    localStorage.setItem('countSpace', countSpace);
     updateCharCount();
 }
 
