@@ -24,7 +24,7 @@
     <div class="header-right">
         <button class="header-btn" onclick="openSaveModal()">
             <i class="ph ph-floppy-disk"></i>
-            <span>저장하기</span>
+            <span>저장</span>
         </button>
         <button class="header-btn" onclick="openImportModal()">
             <i class="ph ph-folder-open"></i>
@@ -38,7 +38,12 @@
         <button id="btn-view-mode" class="icon-btn" onclick="toggleView()" title="읽기/쓰기 전환">
             <i class="ph ph-pencil-simple"></i>
         </button>
-        <button id="btn-theme" class="icon-btn" title="테마 전환"><i class="ph ph-sun"></i></button>
+        <button id="btn-theme" class="icon-btn" onclick="toggleTheme()" title="테마 전환">
+            <i class="ph ph-sun"></i>
+        </button>
+        <button id="btn-fullscreen" class="icon-btn" onclick="toggleFullScreen()" title="전체화면">
+            <i class="ph ph-corners-out"></i>
+        </button>
     </div>
 </header>
 

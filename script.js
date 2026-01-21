@@ -40,6 +40,32 @@ btnTheme.addEventListener('click', () => {
     applyTheme(!isDark);
 });
 
+/* 전체화면 로직 */
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            showToast("전체화면 실패: " + err.message);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+function updateFullscreenIcon() {
+    const icon = document.getElementById('btn-fullscreen').querySelector('i');
+    if (document.fullscreenElement) {
+        icon.className = 'ph ph-corners-in';
+        showToast("전체화면 모드");
+    } else {
+        icon.className = 'ph ph-corners-out';
+        // showToast("전체화면 해제"); // 너무 잦은 토스트 방지 위해 주석
+    }
+}
+
+document.addEventListener('fullscreenchange', updateFullscreenIcon);
+
 // DOM 요소
 const novelTitleInput = document.getElementById('novel-title');
 const sectionTitleInput = document.getElementById('section-title');
