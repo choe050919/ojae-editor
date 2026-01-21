@@ -441,6 +441,7 @@ sectionTitleInput.addEventListener('input', () => {
 function updateCharCount() {
     const count = calculateCharCount();
     countDisplay.innerText = count.toLocaleString();
+    updateGoalProgress(count);
 }
 
 // 글자 수 계산 설정
@@ -479,6 +480,126 @@ function calculateCharCount() {
     
     return text.length;
 }
+
+// ===== 목표 글자수 기능 =====
+let goalEnabled = false;
+let goalValue = 0;
+
+const goalToggleBtn = document.getElementById('goal-toggle-btn');
+const goalDisplay = document.getElementById('goal-display');
+const goalInputArea = document.getElementById('goal-input-area');
+const goalInput = document.getElementById('goal-input');
+const goalText = document.getElementById('goal-text');
+const goalProgressFill = document.getElementById('goal-progress-fill');
+
+// 저장된 목표 불러오기
+function loadGoalFromStorage() {
+    const saved = localStorage.getItem('novelGoal');
+    if (saved) {
+        const data = JSON.parse(saved);
+        goalEnabled = data.enabled || false;
+        goalValue = data.value || 0;
+        
+        if (goalEnabled && goalValue > 0) {
+            goalToggleBtn.classList.add('active');
+            goalDisplay.classList.remove('hidden');
+            updateGoalProgress(calculateCharCount());
+        }
+    }
+}
+
+// 목표 저장
+function saveGoalToStorage() {
+    localStorage.setItem('novelGoal', JSON.stringify({
+        enabled: goalEnabled,
+        value: goalValue
+    }));
+}
+
+// 목표 UI 토글
+function toggleGoalUI() {
+    if (!goalEnabled) {
+        // 목표 활성화 → 입력 모드
+        openGoalInput();
+    } else {
+        // 목표 비활성화
+        goalEnabled = false;
+        goalValue = 0;
+        goalToggleBtn.classList.remove('active');
+        goalDisplay.classList.add('hidden');
+        goalInputArea.classList.add('hidden');
+        saveGoalToStorage();
+        showToast('목표가 해제되었습니다');
+    }
+}
+
+// 목표 입력 열기
+function openGoalInput() {
+    goalDisplay.classList.add('hidden');
+    goalInputArea.classList.remove('hidden');
+    goalInput.value = goalValue || '';
+    goalInput.focus();
+    goalInput.select();
+}
+
+// 목표 저장
+function saveGoal() {
+    const value = parseInt(goalInput.value) || 0;
+    
+    if (value <= 0) {
+        showToast('1 이상의 숫자를 입력하세요');
+        return;
+    }
+    
+    goalValue = value;
+    goalEnabled = true;
+    
+    goalToggleBtn.classList.add('active');
+    goalInputArea.classList.add('hidden');
+    goalDisplay.classList.remove('hidden');
+    
+    updateGoalProgress(calculateCharCount());
+    saveGoalToStorage();
+    showToast(`목표: ${goalValue.toLocaleString()}자`);
+}
+
+// 목표 입력 취소
+function cancelGoalInput() {
+    goalInputArea.classList.add('hidden');
+    
+    if (goalEnabled && goalValue > 0) {
+        goalDisplay.classList.remove('hidden');
+    }
+}
+
+// 프로그레스 업데이트
+function updateGoalProgress(currentCount) {
+    if (!goalEnabled || goalValue <= 0) return;
+    
+    const percent = Math.min(100, (currentCount / goalValue) * 100);
+    goalProgressFill.style.width = percent + '%';
+    
+    // 100% 달성 시 색상 변경
+    if (percent >= 100) {
+        goalProgressFill.classList.add('complete');
+    } else {
+        goalProgressFill.classList.remove('complete');
+    }
+    
+    goalText.textContent = `${currentCount.toLocaleString()} / ${goalValue.toLocaleString()}`;
+}
+
+// Enter 키로 목표 저장
+goalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        saveGoal();
+    } else if (e.key === 'Escape') {
+        cancelGoalInput();
+    }
+});
+
+// 초기화 시 목표 불러오기
+loadGoalFromStorage();
 
 function showToast(message) {
     toast.innerText = message;

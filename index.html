@@ -89,6 +89,24 @@
             <!-- 상태바 (에디터 바로 아래) -->
             <div class="status-bar">
                 <div class="status-left">
+                    <button id="goal-toggle-btn" class="goal-toggle-btn" onclick="toggleGoalUI()" title="목표 글자수 설정">
+                        <i class="ph ph-target"></i>
+                    </button>
+                    <div id="goal-display" class="goal-display hidden">
+                        <div class="goal-progress-bar">
+                            <div id="goal-progress-fill" class="goal-progress-fill"></div>
+                        </div>
+                        <span id="goal-text" class="goal-text">0 / 1,000</span>
+                        <button id="goal-edit-btn" class="goal-edit-btn" onclick="openGoalInput()" title="목표 수정">
+                            <i class="ph ph-pencil-simple"></i>
+                        </button>
+                    </div>
+                    <div id="goal-input-area" class="goal-input-area hidden">
+                        <input type="number" id="goal-input" class="goal-input" placeholder="목표" min="0" step="100">
+                        <span class="goal-input-suffix">자</span>
+                        <button class="goal-input-btn" onclick="saveGoal()">확인</button>
+                        <button class="goal-input-btn cancel" onclick="cancelGoalInput()">취소</button>
+                    </div>
                 </div>
                 <div class="status-right">
                     <button id="scope-toggle" class="status-toggle-btn" onclick="toggleScope()">현재 섹션</button>

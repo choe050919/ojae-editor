@@ -768,6 +768,146 @@ body {
 .status-left {
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+/* 목표 글자수 토글 버튼 */
+.goal-toggle-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.goal-toggle-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.goal-toggle-btn.active {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+/* 목표 표시 영역 */
+.goal-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.goal-display.hidden {
+    display: none;
+}
+
+/* 프로그레스 바 */
+.goal-progress-bar {
+    width: 100px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.goal-progress-fill {
+    height: 100%;
+    background: var(--accent-color);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.goal-progress-fill.complete {
+    background: var(--success-color);
+}
+
+/* 목표 텍스트 */
+.goal-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* 목표 수정 버튼 */
+.goal-edit-btn {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.goal-edit-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* 목표 입력 영역 */
+.goal-input-area {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.goal-input-area.hidden {
+    display: none;
+}
+
+.goal-input {
+    width: 70px;
+    height: 26px;
+    padding: 0 8px;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    outline: none;
+}
+
+.goal-input:focus {
+    border-color: var(--accent-color);
+}
+
+.goal-input-suffix {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.goal-input-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.goal-input-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.goal-input-btn.cancel {
+    color: var(--text-muted);
 }
 
 .status-right {
