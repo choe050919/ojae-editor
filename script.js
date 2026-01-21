@@ -76,6 +76,23 @@ function toggleFocusMode() {
 
 document.addEventListener('fullscreenchange', updateFullscreenIcon);
 
+// 파일 드롭다운
+function toggleFileDropdown() {
+    const dropdown = document.getElementById('file-dropdown');
+    dropdown.classList.toggle('hidden');
+}
+
+function closeFileDropdown() {
+    document.getElementById('file-dropdown').classList.add('hidden');
+}
+
+// 바깥 클릭 시 닫기
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.header-dropdown')) {
+        closeFileDropdown();
+    }
+});
+
 // DOM 요소
 const novelTitleInput = document.getElementById('novel-title');
 const sectionTitleInput = document.getElementById('section-title');

@@ -25,14 +25,23 @@
             <i class="ph ph-cloud-check"></i>
             <span>저장됨</span>
         </button>
-        <button class="header-btn" onclick="openImportModal()">
-            <i class="ph ph-folder-open"></i>
-            <span>불러오기</span>
-        </button>
-        <button class="header-btn" onclick="openExportModal()">
-            <i class="ph ph-download-simple"></i>
-            <span>내보내기</span>
-        </button>
+        <div class="header-dropdown">
+            <button class="header-btn" onclick="toggleFileDropdown()">
+                <i class="ph ph-folder-simple"></i>
+                <span>파일</span>
+                <i class="ph ph-caret-down" style="font-size: 0.8rem; margin-left: 2px;"></i>
+            </button>
+            <div id="file-dropdown" class="header-dropdown-menu hidden">
+                <button class="dropdown-item" onclick="openImportModal(); closeFileDropdown();">
+                    <i class="ph ph-upload-simple"></i>
+                    <span>불러오기</span>
+                </button>
+                <button class="dropdown-item" onclick="openExportModal(); closeFileDropdown();">
+                    <i class="ph ph-download-simple"></i>
+                    <span>내보내기</span>
+                </button>
+            </div>
+        </div>
         <div class="header-divider"></div>
         <button id="btn-view-mode" class="icon-btn" onclick="toggleView()" title="읽기/쓰기 전환">
             <i class="ph ph-pencil-simple"></i>

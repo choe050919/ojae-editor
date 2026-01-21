@@ -157,6 +157,59 @@
     color: var(--text-primary);
 }
 
+/* 헤더 드롭다운 */
+.header-dropdown {
+    position: relative;
+}
+
+.header-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 140px;
+    z-index: 1001;
+}
+
+.header-dropdown-menu.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.dropdown-item:first-child {
+    border-radius: 6px 6px 0 0;
+}
+
+.dropdown-item:last-child {
+    border-radius: 0 0 6px 6px;
+}
+
+.dropdown-item:hover {
+    background: var(--bg-hover);
+}
+
+.dropdown-item i {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
 /* ===== 기본 레이아웃 설정 ===== */
 body {
     background-color: var(--bg-primary);
