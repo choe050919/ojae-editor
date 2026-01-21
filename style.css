@@ -770,26 +770,6 @@ body {
     align-items: center;
 }
 
-.status-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--text-muted);
-    border-radius: 50%;
-    margin-right: 6px;
-}
-
-.status-dot.synced {
-    background: var(--success-color);
-}
-
-.status-left .sync-status {
-    color: var(--text-muted);
-}
-
-.status-left .sync-status.synced {
-    color: var(--text-secondary);
-}
-
 .status-right {
     display: flex;
     align-items: center;

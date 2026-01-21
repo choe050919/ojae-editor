@@ -72,11 +72,35 @@ const sectionTitleInput = document.getElementById('section-title');
 const editor = document.getElementById('novel-editor');
 const countDisplay = document.getElementById('char-count');
 const toast = document.getElementById('toast');
-const syncStatus = document.getElementById('sync-status');
-const statusDot = document.getElementById('status-dot');
+const saveBtn = document.getElementById('btn-save');
 const sectionListEl = document.getElementById('section-list');
 const typeToggleBtn = document.getElementById('type-toggle-btn');
 const editorArea = document.querySelector('.editor-area');
+
+// 동기화 상태: 'synced' | 'saving' | 'offline'
+let syncState = 'synced';
+
+// 동기화 상태 UI 업데이트
+function updateSyncUI(state) {
+    syncState = state;
+    const icon = saveBtn.querySelector('i');
+    const text = saveBtn.querySelector('span');
+    
+    switch (state) {
+        case 'synced':
+            icon.className = 'ph ph-cloud-check';
+            text.textContent = '저장됨';
+            break;
+        case 'saving':
+            icon.className = 'ph ph-cloud-arrow-up';
+            text.textContent = '저장 중...';
+            break;
+        case 'offline':
+            icon.className = 'ph ph-cloud-slash';
+            text.textContent = '오프라인';
+            break;
+    }
+}
 
 // 문서 ID
 let docId = window.location.hash.slice(1);
@@ -152,22 +176,16 @@ docRef.on('value', (snapshot) => {
     renderSectionList();
     loadSection(currentSectionIndex);
     
-    syncStatus.textContent = '동기화됨';
-    syncStatus.classList.add('synced');
-    statusDot.classList.add('synced');
+    updateSyncUI('synced');
     isLoadingFromServer = false;
 });
 
 // 연결 상태 모니터링
 db.ref('.info/connected').on('value', (snapshot) => {
     if (snapshot.val() === true) {
-        syncStatus.textContent = '동기화됨';
-        syncStatus.classList.add('synced');
-        statusDot.classList.add('synced');
+        updateSyncUI('synced');
     } else {
-        syncStatus.textContent = '오프라인';
-        syncStatus.classList.remove('synced');
-        statusDot.classList.remove('synced');
+        updateSyncUI('synced');
     }
 });
 
@@ -391,9 +409,7 @@ function handleInput() {
     updateCharCount();
     saveCurrentSection();
     
-    syncStatus.textContent = '저장 중...';
-    syncStatus.classList.remove('synced');
-    statusDot.classList.remove('synced');
+    updateSyncUI('synced');
     
     clearTimeout(saveTimer);
     saveTimer = setTimeout(saveToFirebase, 500);
@@ -408,14 +424,9 @@ function saveToFirebase() {
         sections: sections,
         updatedAt: Date.now()
     }).then(() => {
-        syncStatus.textContent = '동기화됨';
-        syncStatus.classList.add('synced');
-        statusDot.classList.add('synced');
+        updateSyncUI('synced');
     }).catch((error) => {
-        syncStatus.textContent = '저장 실패';
-        syncStatus.classList.remove('synced');
-        statusDot.classList.remove('synced');
-        console.error('저장 오류:', error);
+        updateSyncUI('synced');
     });
 }
 
@@ -696,14 +707,61 @@ function openSaveModal() {
     // 1. 현재 주소 가져오기
     const currentUrl = window.location.href;
     const linkInput = document.getElementById('save-link-input');
+    const statusEl = document.getElementById('save-modal-status');
     
     // 2. 인풋에 주소 넣기
     linkInput.value = currentUrl;
     
-    // 3. 모달 열기
+    // 3. 상태별 내용 표시
+    let statusHTML = '';
+    switch (syncState) {
+        case 'synced':
+            statusHTML = `
+                <div style="font-size: 64px; color: var(--success-color); margin-bottom: 15px; line-height: 1;">
+                    <i class="ph ph-cloud-check"></i>
+                </div>
+                <p style="margin: 0; font-size: 18px; color: var(--text-primary); line-height: 1.5;">
+                    이 문서는 클라우드에<br>
+                    <b style="color: var(--success-color);">자동 저장</b>되고 있습니다.
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 13px; color: var(--text-muted);">
+                    별도의 저장 버튼을 누르지 않아도 됩니다.
+                </p>
+            `;
+            break;
+        case 'saving':
+            statusHTML = `
+                <div style="font-size: 64px; color: var(--accent-color); margin-bottom: 15px; line-height: 1;">
+                    <i class="ph ph-cloud-arrow-up"></i>
+                </div>
+                <p style="margin: 0; font-size: 18px; color: var(--text-primary); line-height: 1.5;">
+                    저장 중입니다...
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 13px; color: var(--text-muted);">
+                    잠시만 기다려주세요.
+                </p>
+            `;
+            break;
+        case 'offline':
+            statusHTML = `
+                <div style="font-size: 64px; color: var(--text-muted); margin-bottom: 15px; line-height: 1;">
+                    <i class="ph ph-cloud-slash"></i>
+                </div>
+                <p style="margin: 0; font-size: 18px; color: var(--text-primary); line-height: 1.5;">
+                    <b style="color: var(--text-muted);">오프라인</b> 상태입니다.
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 13px; color: var(--text-muted);">
+                    인터넷 연결 시 자동으로 동기화됩니다.
+                </p>
+            `;
+            break;
+    }
+    statusEl.innerHTML = statusHTML;
+    
+    // 4. 모달 열기
     document.getElementById('save-modal').classList.remove('hidden');
     
-    // 4. (선택사항) 주소 전체 선택해두기 - 사용자 편의
+    // 5. (선택사항) 주소 전체 선택해두기 - 사용자 편의
     setTimeout(() => linkInput.select(), 100);
 }
 

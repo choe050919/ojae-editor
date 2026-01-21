@@ -21,9 +21,9 @@
     </div>
     <input type="text" id="novel-title" placeholder="전체 제목을 입력하세요">
     <div class="header-right">
-        <button class="header-btn" onclick="openSaveModal()">
-            <i class="ph ph-floppy-disk"></i>
-            <span>저장하기</span>
+        <button id="btn-save" class="header-btn" onclick="openSaveModal()">
+            <i class="ph ph-cloud-check"></i>
+            <span>저장됨</span>
         </button>
         <button class="header-btn" onclick="openImportModal()">
             <i class="ph ph-folder-open"></i>
@@ -89,8 +89,6 @@
             <!-- 상태바 (에디터 바로 아래) -->
             <div class="status-bar">
                 <div class="status-left">
-                    <span class="status-dot" id="status-dot"></span>
-                    <span class="sync-status" id="sync-status">연결 중...</span>
                 </div>
                 <div class="status-right">
                     <button id="scope-toggle" class="status-toggle-btn" onclick="toggleScope()">현재 섹션</button>
@@ -166,17 +164,8 @@
             <button class="modal-close" onclick="closeSaveModal()">×</button>
         </div>
         <div class="modal-body">
-            <div style="text-align: center; padding: 30px 0 20px 0;">
-                <div style="font-size: 64px; color: var(--success-color); margin-bottom: 15px; line-height: 1;">
-                    <i class="ph ph-cloud-check"></i>
-                </div>
-                <p style="margin: 0; font-size: 18px; color: var(--text-primary); line-height: 1.5;">
-                    이 문서는 클라우드에<br>
-                    <b style="color: var(--success-color);">자동 저장</b>되고 있습니다.
-                </p>
-                <p style="margin: 10px 0 0 0; font-size: 13px; color: var(--text-muted);">
-                    별도의 저장 버튼을 누르지 않아도 됩니다.
-                </p>
+            <div id="save-modal-status" style="text-align: center; padding: 30px 0 20px 0;">
+                <!-- JS에서 상태별로 내용 채움 -->
             </div>
             
             <div class="modal-field" style="flex-direction: column; align-items: stretch; gap: 8px; margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--border-light);">
