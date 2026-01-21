@@ -484,6 +484,7 @@ function calculateCharCount() {
 // ===== 목표 글자수 기능 =====
 let goalEnabled = false;
 let goalValue = 0;
+let goalAchieved = false;
 
 const goalToggleBtn = document.getElementById('goal-toggle-btn');
 const goalDisplay = document.getElementById('goal-display');
@@ -553,6 +554,7 @@ function saveGoal() {
     
     goalValue = value;
     goalEnabled = true;
+    goalAchieved = false;
     
     goalToggleBtn.classList.add('active');
     goalInputArea.classList.add('hidden');
@@ -587,6 +589,11 @@ function updateGoalProgress(currentCount) {
     }
     
     goalText.textContent = `${currentCount.toLocaleString()} / ${goalValue.toLocaleString()}`;
+
+    if (percent >= 100 && !goalAchieved) {
+        goalAchieved = true;
+        showToast('🎉 목표 달성!');
+    }
 }
 
 // Enter 키로 목표 저장
