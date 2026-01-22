@@ -1306,6 +1306,18 @@ body {
     }
 }
 
+@media (max-width: 1293px) {
+    .header-btn span {
+        display: none;
+    }
+}
+
+@media (max-width: 1057px) {
+    .logo span {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .editor-wrapper {
         flex-direction: column;
@@ -1329,6 +1341,8 @@ body {
     }
 
     .youtube-panel { display: none; }
+
+    .logo { display: none; }
 }
 
 /* 포커스 모드 */
