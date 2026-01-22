@@ -1303,6 +1303,7 @@ body {
     .section-sidebar {
         width: calc(50vw - 310px);
         max-width: 540px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1326,6 +1327,8 @@ body {
     .section-list {
         max-height: 30vh;
     }
+
+    .youtube-panel { display: none; }
 }
 
 /* 포커스 모드 */
