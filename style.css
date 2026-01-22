@@ -273,6 +273,14 @@
     #btn-help {
         display: none;
     }
+
+    .focus-mode .hamburger-btn {
+        display: none;
+    }
+    
+    .focus-mode #btn-focus {
+        display: flex !important;
+    }
 }
 
 /* ===== 기본 레이아웃 설정 ===== */
