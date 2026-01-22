@@ -514,7 +514,7 @@ body {
     position: fixed;
     right: 20px;
     top: 75px;
-    width: 160px;
+    width: 200px;
     display: flex;
     flex-direction: column;
 }
@@ -1285,16 +1285,27 @@ body {
 @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
 /* 반응형 (모바일) */
-@media (max-width: 1200px) {
+@media (max-width: 1020px) {
+    .editor-wrapper {
+        flex-direction: column; 
+        align-items: center;
+        gap: 20px;
+    }
+
     .youtube-panel {
         position: static;
         width: 100%;
         max-width: 540px;
         margin-bottom: 15px;
+        order: 1;
     }
+
+    .section-sidebar {
+        width: calc(50vw - 310px);
+        max-width: 540px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
     .editor-wrapper {
         flex-direction: column;
         align-items: center;
