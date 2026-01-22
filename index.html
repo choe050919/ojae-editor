@@ -55,6 +55,32 @@
         <button id="btn-focus" class="icon-btn" onclick="toggleFocusMode()" title="집중 모드">
             <i class="ph ph-eye"></i>
         </button>
+
+        <button id="btn-menu" class="icon-btn hamburger-btn" onclick="toggleMobileMenu()">
+            <i class="ph ph-list"></i>
+        </button>
+
+        <div id="mobile-menu" class="mobile-menu hidden">
+            <button class="mobile-menu-item" onclick="openHelpModal(); closeMobileMenu();">
+                <i class="ph ph-info"></i><span>도움말</span>
+            </button>
+            <button class="mobile-menu-item" onclick="toggleFileDropdown();">
+                <i class="ph ph-folder-simple"></i><span>파일</span>
+            </button>
+            <div class="mobile-menu-divider"></div>
+            <button class="mobile-menu-item" onclick="toggleView(); closeMobileMenu();">
+                <i class="ph ph-pencil-simple"></i><span>읽기/쓰기</span>
+            </button>
+            <button class="mobile-menu-item" onclick="toggleTheme(); closeMobileMenu();">
+                <i class="ph ph-sun"></i><span>테마</span>
+            </button>
+            <button class="mobile-menu-item" onclick="toggleFullScreen(); closeMobileMenu();">
+                <i class="ph ph-corners-out"></i><span>전체화면</span>
+            </button>
+            <button class="mobile-menu-item" onclick="toggleFocusMode(); closeMobileMenu();">
+                <i class="ph ph-eye"></i><span>집중 모드</span>
+            </button>
+        </div>
     </div>
 </header>
 

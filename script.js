@@ -93,6 +93,21 @@ document.addEventListener('click', function(e) {
     }
 });
 
+function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+}
+
+function closeMobileMenu() {
+    document.getElementById('mobile-menu').classList.add('hidden');
+}
+
+// 바깥 클릭 시 닫기 (기존 dropdown 리스너에 추가)
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#btn-menu') && !e.target.closest('#mobile-menu')) {
+        closeMobileMenu();
+    }
+});
+
 // DOM 요소
 const novelTitleInput = document.getElementById('novel-title');
 const sectionTitleInput = document.getElementById('section-title');
