@@ -1763,3 +1763,8 @@ function handleSectionDragEnd(e) {
     
     draggedSectionIndex = null;
 }
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(!isDark);
+}
