@@ -292,7 +292,7 @@ body {
     margin: 0;
     padding: 75px 20px 20px 20px;
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     color: var(--text-primary);
 }
